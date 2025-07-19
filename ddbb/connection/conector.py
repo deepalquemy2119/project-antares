@@ -8,3 +8,5 @@ def get_mysql_connection():
         password=Config.MYSQL_PASSWORD,
         database=Config.MYSQL_DATABASE
     )
+
+print("[DEBUG] MySQL Config:", Config.MYSQL_HOST, Config.MYSQL_USER, Config.MYSQL_PASSWORD, Config.MYSQL_DATABASE)
