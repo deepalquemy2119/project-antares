@@ -1,32 +1,303 @@
-@import url('./index.css');
+@import url('./index.css'); /* index base */
 
-
-
-
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #5e676d;
-    color: #051f46;
-    text-align: center;
+/* Paleta general */
+:root {
+  --tutor-bg: #1a2a3a;
+  --tutor-text: #f3f3be;
+  --tutor-input-bg: #273746;
+  --tutor-input-text: #fff8dc;
+  --tutor-btn-bg: #145da0;
+  --tutor-btn-hover: #4592da;
+  --tutor-btn-text: #f8b551;
+  --error-bg: #ffe0e0;
+  --error-text: #a30000;
+  --success-bg: #e0ffe6;
+  --success-text: #005f20;
 }
-ul {
-    list-style: none;
-    padding: 0;
+
+/* Contenedor general */
+.tutor-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 2rem;
+  background-color: var(--tutor-bg);
 }
-li a {
-    display: block;
+
+/* Tarjeta */
+.tutor-card {
+  background-color: var(--tutor-bg);
+  color: var(--tutor-text);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  text-align: left;
+}
+
+.tutor-title {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+}
+
+/* Formulario */
+.tutor-form label {
+  display: block;
+  margin: 1rem 0 0.3rem;
+  font-weight: 500;
+}
+
+.tutor-form input,
+.tutor-form textarea {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: var(--tutor-input-bg);
+  color: var(--tutor-input-text);
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.tutor-form input:focus,
+.tutor-form textarea:focus {
+  outline: 2px solid var(--tutor-btn-hover);
+  background-color: #2c3e50;
+}
+
+.tutor-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Botón */
+.tutor-btn {
+  background-color: var(--tutor-btn-bg);
+  color: var(--tutor-btn-text);
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.tutor-btn:hover {
+  background-color: var(--tutor-btn-hover);
+  transform: scale(1.03);
+}
+
+/* Mensajes */
+.error-msg {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.success-msg {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* Responsividad */
+@media (max-width: 600px) {
+  .tutor-card {
+    padding: 1.2rem;
+  }
+  .tutor-title {
+    font-size: 1.4rem;
+  }
+  .tutor-form input,
+  .tutor-form textarea {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.8rem;
+  }
+  .tutor-btn {
+    font-size: 0.95rem;
+    padding: 0.7rem;
+  }
+}
+
+/* Enlaces o lista general de tutor */
+ul.tutor-list {
+  list-style: none;
+  padding: 0;
+}
+ul.tutor-list li a {
+  display: block;
+  padding: 0.8rem;
+  margin: 0.5rem auto;
+  background-color: #596c7c;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  max-width: 300px;
+  transition: background-color 0.3s ease;
+}
+ul.tutor-list li a:hover {
+  background-color: #1565c0;
+}
+
+
+
+/* Para mejorar la parte responsive de 
+la lista de materiales: */
+
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.material-card {
+  background-color: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  color: var(--tutor-text);
+}
+
+.material-card p {
+  margin: 0.3rem 0;
+}
+
+
+/* Para mejorar la interfaz de la subida de materiales */
+
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.material-card {
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.material-thumb {
+  max-width: 100%;
+  max-height: 160px;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  object-fit: cover;
+}
+
+.delete-btn {
+  background-color: #c0392b;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #e74c3c;
+}
+
+
+.materials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.material-card {
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.material-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.material-thumb {
+  max-width: 100%;
+  max-height: 160px;
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  object-fit: cover;
+}
+
+.delete-btn {
+  background-color: #c0392b;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background-color: #e74c3c;
+}
+
+/* RESPONSIVE para tutor */
+@media (max-width: 600px) {
+  .tutor-card {
     padding: 1rem;
-    margin: 1rem auto;
-    background-color: #596c7c;
-    color: white;
-    text-decoration: none;
-    width: 240px;
-    border-radius: 8px;
-}
-li a:hover {
-    background-color: #1565c0;
+  }
+  .materials-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* .logo-subtitle{
-    font-size: 28px;
-} */
+
+/* Boton de borrado de materiales */
+
+.delete-btn {
+  background-color: #d9534f;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.delete-btn:hover {
+  background-color: #c9302c;
+}

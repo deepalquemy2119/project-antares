@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Bienvenido a Antares{% endblock %}
+
+{% block extra_styles %}
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block subtitle %}
+  <div>
+    <h4 class="logo-subtitle">Academy</h4>
+  </div>
+{% endblock %}
+
+{% block categorias %}
+<!-- Categorías públicas -->
+<section class="categories-section">
+  <h2 class="categories-title">Categories</h2>
+  <div class="categories-grid">
+    <div class="category-tile" data-category="programming">Programming</div>
+    <div class="category-tile" data-category="design">Design</div>
+    <div class="category-tile" data-category="marketing">Marketing</div>
+    <div class="category-tile" data-category="business">Business</div>
+    <div class="category-tile" data-category="photography">Photography</div>
+    <div class="category-tile" data-category="languages">Languages</div>
+  </div>
+</section>
+{% endblock %}
+
+
+
+{% block buscador %}
+<!--  -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const categorias = document.querySelectorAll(".category-tile");
+    const user_id = "{{ session.get('user_id') or '' }}";
+
+    categorias.forEach(cat => {
+      cat.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        if (!user_id) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Inicia sesión',
+            text: 'Debes iniciar sesión o registrarte para acceder a esta categoría.',
+            confirmButtonText: 'Entendido'
+          });
+        } else {
+          const category = cat.getAttribute("data-category");
+          window.location.href = `/courses/${category}`;
+        }
+      });
+    });
+  });
+</script>
+
+
+{% endblock %}

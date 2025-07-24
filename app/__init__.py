@@ -1,50 +1,40 @@
-from flask import Flask, render_template
-from dotenv import load_dotenv
-import os
-from flask_mail import Mail
+from flask import Flask
+from app.extensions import db, login_manager
 from config import Config
-from .routes import main 
-# Importá db desde flask_sqlalchemy SOLO UNA VEZ y exportalo en app/extensions.py
-# Para evitar conflictos, no definas db aquí y también en extensions.py
-from app.extensions import db  # suponiendo que en extensions.py hiciste: db = SQLAlchemy()
-
-# Blueprints
-from app.routes.auth_routes import auth_bp
-from app.routes.public_routes import public_bp 
+from app.routes.public_routes import public_bp
 from app.routes.user_routes import user_bp
-from app.routes.admin_routes import admin_bp
-
-load_dotenv()
-mail = Mail()
 
 
 
-
-
-
-def create_app(config_class=Config):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    app.config.from_object(Config)
 
-    # Inicializar extensiones
+# inicio extensiones
     db.init_app(app)
-    mail.init_app(app)
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
 
-    # Registrar Blueprints
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(public_bp)
-    app.register_blueprint(user_bp, url_prefix='/user')
-    app.register_blueprint(admin_bp, url_prefix='/admin')
-    app.register_blueprint(main)
+    from app.models import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+# registro de blueprints
+    with app.app_context():
+        from app.routes.auth_routes import auth_bp
+        from app.routes.user_routes import user_bp
+        from app.routes.course_routes import course_bp
+        from app.routes.admin_routes import admin_bp
+        from app.routes.tutor_routes import tutor_bp
 
 
-    # Ruta pública principal
-    @app.route('/')
-    def public_home():
-        return render_template('public.html', fecha_completa="2025 © Antares Academy")
+        app.register_blueprint(tutor_bp)
+        app.register_blueprint(auth_bp)
+        app.register_blueprint(user_bp)
+        app.register_blueprint(course_bp)
+        app.register_blueprint(admin_bp)
+        app.register_blueprint(public_bp)
 
-    return app
-
-
-# Exportar la app
-__all__ = ["app"]
+    return app  # <- ESTO debe estar DENTRO de la función, no suelto afuera

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block body_class %}profile-page{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+  <h1>Perfil de {{ session.get('user_name') }}</h1>
+
+  <div class="profile-section">
+    <h2>Información personal</h2>
+    <p><strong>Correo:</strong> {{ user.email }}</p>
+    <p><strong>Rol:</strong> {{ user.role | capitalize }}</p>
+  </div>
+
+  <hr>
+
+  <div class="profile-section">
+    <h2>Mis cursos</h2>
+
+    {% if user.courses %}
+      <ul class="courses-list">
+        {% for course in user.courses %}
+          <li class="course-item">
+            <strong>{{ course.name }}</strong><br>
+            Progreso: {{ course.progress }}%<br>
+            Certificado: 
+              {% if course.certified %}
+                <span class="certificado-ok">✔️ Obtenido</span>
+              {% else %}
+                ❌ No obtenido
+              {% endif %}
+            <br>
+            Cuota vence: {{ course.payment_due.strftime('%d/%m/%Y') }}<br>
+            {% if course.payment_due and course.payment_due <= fecha_hoy %}
+              <div class="alert alert-warning">
+                ⚠️ ¡Tu cuota de <strong>{{ course.name }}</strong> vence pronto!
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No estás inscrito en ningún curso actualmente.</p>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <div class="profile-section">
+    <h2>Mensajes del tutor</h2>
+    {% if user.messages %}
+      <ul>
+        {% for msg in user.messages %}
+          <li><strong>{{ msg.sender }}:</strong> {{ msg.text }} <br><em>{{ msg.date.strftime('%d/%m/%Y') }}</em></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No tenés mensajes nuevos.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

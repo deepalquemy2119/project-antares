@@ -27,3 +27,53 @@ li a {
 li a:hover {
     background-color: #3f4974;
 }
+
+
+
+
+
+/* .dashboard-container {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.dashboard-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #004aad;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.dashboard-btn.logout-btn {
+  background-color: #c0392b;
+}
+
+.dashboard-course-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.dashboard-course-item {
+  background: #f4f4f4;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.certificado-ok {
+  color: green;
+}
+
+.certificado-pending {
+  color: red;
+}
+ */

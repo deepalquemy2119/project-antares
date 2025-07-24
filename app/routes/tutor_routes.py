@@ -1,291 +1,237 @@
-# from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-# import os
-# from werkzeug.utils import secure_filename
-# from ddbb.connection.conector import get_mysql_connection
-
-# tutor_bp = Blueprint('tutor', __name__)
-
-# UPLOAD_FOLDER = 'uploads'
-
-# # ==============================
-# # Ruta: Crear un nuevo curso
-# # ==============================
-# @tutor_bp.route('/create_course', methods=['GET', 'POST'])
-# def create_course():
-#     if session.get('user_role') != 'tutor':
-#         flash("Solo los tutores pueden acceder a esta sección", "error")
-#         return redirect(url_for('public.home'))
-
-#     if request.method == 'POST':
-#         title = request.form['title']
-#         description = request.form['description']
-
-#         # Crear curso en la base de datos
-#         connection = get_mysql_connection()
-#         cursor = connection.cursor()
-
-#         cursor.callproc('sp_create_course', (title, description, session['user_id'], 'pendiente'))
-#         connection.commit()
-
-#         # Obtener el ID del curso recién creado
-#         cursor.execute("SELECT LAST_INSERT_ID()")
-#         course_id = cursor.fetchone()[0]
-
-#         # Crear carpeta física para almacenar archivos
-#         folder_path = os.path.join(UPLOAD_FOLDER, f"course_{course_id}")
-#         os.makedirs(folder_path, exist_ok=True)
-
-#         flash("Curso creado correctamente. Esperando aprobación del administrador.", "success")
-#         return redirect(url_for('tutor.upload_materials', course_id=course_id))
-
-#     return render_template('tutor/create_course.html')
-
-
-# # =============================================
-# # Ruta: Subir materiales (solo después de crear)
-# # =============================================
-# @tutor_bp.route('/upload_materials/<int:course_id>', methods=['GET', 'POST'])
-# def upload_materials(course_id):
-#     if session.get('user_role') != 'tutor':
-#         flash("Acceso denegado. Solo tutores pueden subir materiales.", "error")
-#         return redirect(url_for('public.home'))
-
-#     folder_path = os.path.join(UPLOAD_FOLDER, f"course_{course_id}")
-
-#     if request.method == 'POST':
-#         files = request.files.getlist('materials')
-
-#         for file in files:
-#             if file and file.filename:
-#                 filename = secure_filename(file.filename)
-#                 file.save(os.path.join(folder_path, filename))
-#                 # Podés agregar lógica para insertar info en una tabla "materials" si querés
-
-#         flash("Materiales subidos correctamente.", "success")
-#         return redirect(url_for('tutor.upload_materials', course_id=course_id))
-
-#     return render_template('tutor/upload_materials.html', course_id=course_id)
-
-
-
-
-#//////////////////////////////////////////////////////////////7
 # tutor_routes.py
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, send_from_directory
+from flask import (
+    Blueprint, render_template, request, redirect,
+    url_for, flash, session, send_from_directory, abort
+)
 from werkzeug.utils import secure_filename
-import os
 from datetime import datetime
-from ddbb.connection.conector import get_mysql_connection
+import os
+import uuid
+from functools import wraps
+
+from app.ddbb.connection.conector import get_mysql_connection
 
 tutor_bp = Blueprint('tutor', __name__, template_folder='../templates/tutor')
 
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'mp4', 'mov', 'avi'}
+ALLOWED_EXTENSIONS = {
+    'video': ['.mp4', '.mov', '.avi'],
+    'image': ['.jpg', '.jpeg', '.png'],
+    'pdf': ['.pdf'],
+    'texto': ['.txt', '.md'],  # agregué extensiones de texto
+}
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# Decorador para login y roles
+def login_required(role=None):
+    def wrapper(view_func):
+        @wraps(view_func)
+        def decorated_view(*args, **kwargs):
+            if 'user_id' not in session:
+                flash("Iniciá sesión para continuar.", "danger")
+                return redirect(url_for('auth.login'))
+            if role and session.get('user_role') != role:
+                flash("Acceso denegado.", "danger")
+                return redirect(url_for('public.home'))
+            return view_func(*args, **kwargs)
+        return decorated_view
+    return wrapper
 
-# @tutor_bp.route('/upload_materials/<int:course_id>', methods=['GET', 'POST'])
-# def upload_materials(course_id):
-#     if 'user_id' not in session or session.get('role') != 'tutor':
-#         flash('Acceso denegado. Inicia sesión como tutor.', 'danger')
-#         return redirect(url_for('auth.login'))
+def is_tutor_authorized(course_id, tutor_id, conn):
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM courses WHERE id = %s AND tutor_id = %s", (course_id, tutor_id))
+    return cursor.fetchone()
 
-#     tutor_id = session['user_id']
+def is_student_enrolled(course_id, student_id, conn):
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM student_courses WHERE course_id = %s AND student_id = %s", (course_id, student_id))
+    return cursor.fetchone()
 
-#     # Validar que el curso pertenezca al tutor actual y que esté aprobado
-#     conn = get_mysql_connection()
-#     cursor = conn.cursor(dictionary=True)
-#     cursor.execute("""
-#         SELECT id, title, is_approved 
-#         FROM courses 
-#         WHERE id = %s AND tutor_id = %s
-#     """, (course_id, tutor_id))
-#     curso = cursor.fetchone()
+def generate_unique_filename(filename):
+    ext = os.path.splitext(filename)[1]
+    return f"{uuid.uuid4().hex}{ext}"
 
-#     if not curso:
-#         flash("No tienes permiso para gestionar este curso.", "danger")
-#         return redirect(url_for('tutor.dashboard'))
+# RUTA: Dashboard del tutor (para evitar error BuildError)
+@tutor_bp.route('/dashboard')
+@login_required(role='tutor')
+def dashboard():
+    conn = get_mysql_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM courses WHERE tutor_id = %s", (session['user_id'],))
+    courses = cursor.fetchall()
+    return render_template('tutor/dashboard.html', courses=courses)
 
-#     if not curso['is_approved']:
-#         flash("Este curso aún no fue aprobado por un administrador.", "warning")
-#         return redirect(url_for('tutor.dashboard'))
 
-#     if request.method == 'POST':
-#         file = request.files.get('file')
-#         file_type = request.form.get('file_type')
+#==================================
 
-#         if not file or not allowed_file(file.filename):
-#             flash('Archivo inválido o tipo no permitido.', 'danger')
-#             return redirect(request.url)
+# RUTA: Crear nuevo curso
+@tutor_bp.route('/create_course', methods=['GET', 'POST'])
+@login_required(role='tutor')
+def create_course():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        price = request.form.get('price')
+        duration = request.form.get('duration')
 
-#         filename = secure_filename(file.filename)
-#         course_folder = os.path.join(UPLOAD_FOLDER, f'course_{course_id}')
+        # Validaciones
+        if not title or not description or not price or not duration:
+            flash("Todos los campos son obligatorios.", "danger")
+            return redirect(request.url)
 
-#         os.makedirs(course_folder, exist_ok=True)
-#         file_path = os.path.join(course_folder, filename)
-#         file.save(file_path)
+        try:
+            price = float(price)
+            duration = int(duration)
+        except ValueError:
+            flash("Precio o duración inválidos.", "danger")
+            return redirect(request.url)
 
-#         # Guardar en base de datos
-#         rel_path = os.path.relpath(file_path)  # guardar ruta relativa
-#         now = datetime.now()
+        if price <= 0 or duration <= 0:
+            flash("Precio y duración deben ser mayores a 0.", "danger")
+            return redirect(request.url)
 
-#         cursor.execute("""
-#             INSERT INTO materials (course_id, file_type, file_path, uploaded_at)
-#             VALUES (%s, %s, %s, %s)
-#         """, (course_id, file_type, rel_path, now))
-#         conn.commit()
+        # Insertar en la base de datos
+        conn = get_mysql_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO courses (title, description, price, duration, tutor_id, status, created_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            title,
+            description,
+            price,
+            duration,
+            session['user_id'],
+            'borrador',  # estado inicial
+            datetime.now()
+        ))
+        conn.commit()
+        conn.close()
 
-#         flash('Archivo subido correctamente.', 'success')
-#         return redirect(url_for('tutor.upload_materials', course_id=course_id))
+        flash("Curso creado correctamente. Queda pendiente de aprobación.", "success")
+        return redirect(url_for('tutor.dashboard'))
 
-#     # Cargar materiales existentes
-#     cursor.execute("""
-#         SELECT id, file_type, file_path, uploaded_at 
-#         FROM materials 
-#         WHERE course_id = %s
-#         ORDER BY uploaded_at DESC
-#     """, (course_id,))
-#     materials = cursor.fetchall()
+    # Si es GET, renderiza el formulario
+    return render_template('tutor/create_course.html')
 
-#     conn.close()
 
-#     return render_template('tutor/upload_materials.html', course_id=course_id, materials=materials)
+#==================================
 
-#--------------------- upload_materials NUEVO ---------------------
+
+
+# RUTA: Subir materiales
 @tutor_bp.route('/upload_materials/<int:course_id>', methods=['GET', 'POST'])
+@login_required(role='tutor')
 def upload_materials(course_id):
-    if session.get('user_role') != 'tutor':
-        flash("Solo los tutores pueden subir materiales", "error")
-        return redirect(url_for('public.home'))
-
-    connection = get_mysql_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    # Verificar que el curso exista y pertenezca al tutor actual
-    cursor.execute("SELECT * FROM courses WHERE id = %s AND tutor_id = %s", (course_id, session['user_id']))
-    course = cursor.fetchone()
+    conn = get_mysql_connection()
+    course = is_tutor_authorized(course_id, session['user_id'], conn)
 
     if not course:
-        flash("Curso no encontrado o no autorizado.", "error")
-        return redirect(url_for('tutor.create_course'))
+        flash("Curso no encontrado o no autorizado.", "danger")
+        return redirect(url_for('tutor.dashboard'))
+
+
+    cursor = conn.cursor(dictionary=True)
 
     if request.method == 'POST':
         uploaded_file = request.files.get('file')
-        material_type = request.form.get('type')  # video, image, pdf, etc.
+        material_type = request.form.get('file_type')  # CORRECCIÓN: usar 'file_type'
 
         if not uploaded_file:
-            flash("No se seleccionó ningún archivo.", "error")
+            flash("No se seleccionó ningún archivo.", "danger")
             return redirect(request.url)
 
         filename = secure_filename(uploaded_file.filename)
-
-        # Validación por tipo
-        allowed_extensions = {
-            'video': ['.mp4', '.mov', '.avi'],
-            'image': ['.jpg', '.jpeg', '.png'],
-            'pdf': ['.pdf'],
-        }
-
         ext = os.path.splitext(filename)[1].lower()
 
-        if ext not in allowed_extensions.get(material_type, []):
-            flash("Tipo de archivo no permitido para este material.", "error")
+        if ext not in ALLOWED_EXTENSIONS.get(material_type, []):
+            flash("Tipo de archivo no permitido para este material.", "danger")
             return redirect(request.url)
 
-        # Guardar archivo
-        folder_path = os.path.join('uploads', f"course_{course_id}")
-        os.makedirs(folder_path, exist_ok=True)
+        # Crear carpeta del curso si no existe
+        course_folder = os.path.join(UPLOAD_FOLDER, f"course_{course_id}")
+        os.makedirs(course_folder, exist_ok=True)
 
-        file_path = os.path.join(folder_path, filename)
-        uploaded_file.save(file_path)
+        unique_filename = generate_unique_filename(filename)
+        full_path = os.path.join(course_folder, unique_filename)
+        uploaded_file.save(full_path)
 
-        # Registrar en la base de datos
+        # Guardamos el nombre original y la ruta relativa para la descarga
+        rel_path = os.path.join(f"course_{course_id}", unique_filename)
+
+        # Insertar en base de datos
         cursor.execute("""
-            INSERT INTO materials (course_id, file_name, file_path, file_type)
-            VALUES (%s, %s, %s, %s)
-        """, (course_id, filename, file_path, material_type))
+            INSERT INTO materials (course_id, file_name, file_path, file_type, uploaded_at)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (course_id, filename, rel_path, material_type, datetime.now()))
+        conn.commit()
 
-        connection.commit()
         flash("Archivo subido correctamente.", "success")
         return redirect(request.url)
 
-    return render_template('tutor/upload_materials.html', course=course)
-
-#-------------------------------------
-from flask import send_from_directory, abort
-
-# Ruta para listar materiales visibles según rol
-@tutor_bp.route('/materials/<int:course_id>')
-def list_materials(course_id):
-    user_id = session.get('user_id')
-    role = session.get('user_role')
-
-    connection = get_mysql_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    # 🔒 Control de acceso por rol
-    if role == 'tutor':
-        cursor.execute("SELECT * FROM courses WHERE id = %s AND tutor_id = %s", (course_id, user_id))
-        course = cursor.fetchone()
-        if not course:
-            flash("No autorizado para ver los materiales de este curso.", "error")
-            return redirect(url_for('public.home'))
-
-    elif role == 'student':
-        # Validar si el estudiante compró el curso
-        cursor.execute("""
-            SELECT * FROM student_courses WHERE student_id = %s AND course_id = %s
-        """, (user_id, course_id))
-        access = cursor.fetchone()
-        if not access:
-            flash("Debes comprar el curso para acceder a sus materiales.", "error")
-            return redirect(url_for('public.home'))
-
-    elif role == 'admin':
-        pass  # acceso total
-
-    else:
-        flash("Iniciá sesión para ver materiales.", "error")
-        return redirect(url_for('auth.login'))
-
-    # ✅ Obtener materiales
-    cursor.execute("SELECT * FROM materials WHERE course_id = %s", (course_id,))
+    # Obtener materiales existentes
+    cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
     materials = cursor.fetchall()
 
-    return render_template('materials/list.html', materials=materials, course_id=course_id)
+    return render_template('materials/upload.html', course=course, materials=materials, course_id=course_id)
 
-
-
-#------------------------------------------------
-
+# RUTA: Descargar material
 @tutor_bp.route('/download_material/<int:course_id>/<filename>')
+@login_required()
 def download_material(course_id, filename):
     user_id = session.get('user_id')
     role = session.get('user_role')
 
-    # Verificar acceso como en la vista anterior
-    connection = get_mysql_connection()
-    cursor = connection.cursor(dictionary=True)
+    conn = get_mysql_connection()
+    cursor = conn.cursor(dictionary=True)
 
     access_granted = False
-
-    if role == 'tutor':
-        cursor.execute("SELECT * FROM courses WHERE id = %s AND tutor_id = %s", (course_id, user_id))
-        if cursor.fetchone():
-            access_granted = True
-
-    elif role == 'student':
-        cursor.execute("SELECT * FROM student_courses WHERE student_id = %s AND course_id = %s", (user_id, course_id))
-        if cursor.fetchone():
-            access_granted = True
-
+    if role == 'tutor' and is_tutor_authorized(course_id, user_id, conn):
+        access_granted = True
+    elif role == 'student' and is_student_enrolled(course_id, user_id, conn):
+        access_granted = True
     elif role == 'admin':
         access_granted = True
 
     if not access_granted:
-        flash("No autorizado.", "error")
+        flash("No autorizado.", "danger")
         return redirect(url_for('public.home'))
 
-    folder = os.path.join('uploads', f'course_{course_id}')
+    cursor.execute("SELECT * FROM materials WHERE course_id = %s AND file_name = %s", (course_id, filename))
+    if not cursor.fetchone():
+        abort(404)
+
+    folder = os.path.join(UPLOAD_FOLDER, f'course_{course_id}')
     return send_from_directory(folder, filename, as_attachment=True)
+
+
+@tutor_bp.route('/delete_material/<int:course_id>/<int:material_id>', methods=['POST'])
+@login_required(role='tutor')
+def delete_material(course_id, material_id):
+    conn = get_mysql_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Verificar que el curso le pertenece al tutor
+    course = is_tutor_authorized(course_id, session['user_id'], conn)
+    if not course:
+        flash("No autorizado para este curso.", "danger")
+        return redirect(url_for('tutor.dashboard'))
+
+    # Obtener material
+    cursor.execute("SELECT * FROM materials WHERE id = %s AND course_id = %s", (material_id, course_id))
+    material = cursor.fetchone()
+    if not material:
+        flash("Material no encontrado.", "danger")
+        return redirect(url_for('tutor.upload_materials', course_id=course_id))
+
+    # Borrar archivo físico
+    file_path = os.path.join('uploads', f"course_{course_id}", material['file_path'].split('/')[-1])
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    # Eliminar de la base de datos
+    cursor.execute("DELETE FROM materials WHERE id = %s", (material_id,))
+    conn.commit()
+    conn.close()
+
+    flash("Material eliminado correctamente.", "success")
+    return redirect(url_for('tutor.upload_materials', course_id=course_id))

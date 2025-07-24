@@ -37,7 +37,9 @@
   <ul>
     {% for m in materials %}
       <li>{{ m.file_type }}: 
-        <a href="/{{ m.file_path }}" target="_blank">{{ m.file_path.split('/')[-1] }}</a> 
+        <a href="{{ url_for('tutor.download_material', course_id=course_id, filename=m.file_path.split('/')[-1]) }}" target="_blank">
+          {{ m.file_name }}
+        </a> 
         ({{ m.uploaded_at }})
       </li>
     {% else %}

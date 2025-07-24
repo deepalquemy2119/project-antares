@@ -8,11 +8,15 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/403.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tutor.css') }}">
 
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/materials.css') }}">
 
-  <!-- Font Awesome CDN -->
+  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/materials.css') }}"> -->
+
+  <!-- -------------------  Font Awesome CDN -------------------- -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -22,6 +26,7 @@
   />
 </head>
 
+<!-- ------------------------ BODY --------------------------- -->
 <body class="{% block body_class %}{% endblock %}">
 
   {% include "componentes/alerts.html" %}
@@ -83,38 +88,40 @@
 
   <!-- --------- Navegacion principal ----------- -->
 <nav class="main-nav">
-  
   {% if session.get('user_id') %}
-      {% if request.endpoint != 'admin.dashboard' %}
-        <div class="nav-user-section">
-                Hola, {{ session.get('user_name') }}!
-        </div><br><br>
+    <!-- Usuario logueado: botones y links -->
+    <div class="nav-user-section">
+      Hola, {{ session.get('user_name') }}!
+    </div><br><br>
+    <div class="nav-links">
+      <a href="{{ url_for('public.home') }}" class="nav-btn">Home</a>
+
+      {% if session.get('user_role') == 'admin' and request.endpoint == 'admin.dashboard' %}
+        <a href="{{ url_for('admin.dashboard') }}" class="nav-btn m-4">Dashboard Admin</a>
+      {% elif session.get('user_role') == 'tutor' %}
+        <a href="{{ url_for('tutor.dashboard') }}" class="nav-btn m-4">Dashboard Tutor</a>
+      {% elif session.get('user_role') == 'user' %} 
+        <a href="{{ url_for('user.dashboard') }}" class="nav-btn m-4">Dashboard User></a>
       {% endif %}
-        <div class="nav-links">
-          <a href="{{ url_for('public.home') }}" class="nav-btn">Home</a>
-            
 
-                        {% if session.get('user_role') == 'admin' and request.endpoint != 'admin.dashboard' %}
-                    <a href="{{ url_for('admin.dashboard') }}" class="nav-btn m-4">Dashboard Admin</a>
-                  {% elif session.get('user_role') != 'admin' %}
-                    <a href="{{ url_for('user.dashboard') }}" class="nav-btn m-4">Mi Dashboard</a>
-                  {% endif %}
+      <a href="{{ url_for('auth.logout') }}" class="nav-btn">Cerrar sesión</a>
+    </div>
 
-            </div>
-          <a href="{{ url_for('auth.logout') }}" class="nav-btn">Cerrar sesión</a>
-        </div>
-
-      {% else %}
-        <div class="nav-links">
-          <a href="{{ url_for('auth.login') }}" class="nav-btn m-4">Iniciar Sesión</a>
-          <a href="{{ url_for('auth.register') }}" class="nav-btn m-4">Registrarse</a>
-        </div>
+  {% else %}
+    <!-- Usuario NO logueado: botones de login y registro -->
+    {% if request.endpoint != 'auth.login' and request.endpoint != 'auth.register' %}
+      <div class="nav-links">
+        <a href="{{ url_for('auth.login') }}" class="nav-btn m-4">Iniciar Sesión</a>
+        <a href="{{ url_for('auth.register') }}" class="nav-btn m-4">Registrarse</a>
+      </div>
+    {% endif %}
   {% endif %}
 </nav>
+
   <!-- ----------- Main Content ------------ -->
   <main class="main-content">
     {% block content %}
-    <!-- Aquí va el contenido de cada página -->
+    <!-- contenido página -->
     {% endblock %}
   </main>
 
@@ -201,10 +208,13 @@
     });
   </script>
 
- 
+{% block scripts %}{% endblock %}
+
+ <!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>
-
 
 <!-- -------------------   
 

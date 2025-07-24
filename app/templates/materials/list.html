@@ -22,15 +22,18 @@
 <div class="materials-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
   {% for material in materials %}
     <div class="material-card" style="border: 1px solid #ccc; border-radius: 10px; padding: 10px; text-align: center;">
-      <h4 style="font-size: 1rem;">{{ material.file_name }}</h4>
+      <h4 style="font-size: 1rem;">{{ material.file_path.split('/')[-1] }}</h4>
 
-      {% if material.file_type.startswith('image/') %}
+
+     {% if material.file_type == 'image' %}
+
         <img src="{{ url_for('tutor.download_material', course_id=material.course_id, filename=material.file_name) }}" 
              alt="Imagen" style="max-width: 100%; height: auto; border-radius: 5px;">
       
       {% elif material.file_type.startswith('video/') %}
         <video controls style="max-width: 100%; height: auto;">
-          <source src="{{ url_for('tutor.download_material', course_id=material.course_id, filename=material.file_name) }}" type="{{ material.file_type }}">
+          <source src="{{ url_for('tutor.download_material', course_id=material.course_id, filename=material.file_path.split('/')[-1])
+ }}" type="{{ material.file_type }}">
           Tu navegador no soporta video.
         </video>
 

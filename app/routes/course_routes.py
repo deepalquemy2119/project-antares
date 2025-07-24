@@ -5,6 +5,11 @@ from werkzeug.utils import secure_filename
 from app.routes.auth_routes import auth_bp
 from app.ddbb.connection.conector import get_mysql_connection
 
+from flask import send_from_directory
+
+
+
+
 course_bp = Blueprint('course', __name__, url_prefix='/tutor')
 
 # Directorio base para uploads (configurable en app.config)
@@ -94,3 +99,10 @@ def upload_materials(course_id):
     conn.close()
 
     return render_template('tutor/upload_materials.html', course_id=course_id, materials=materials)
+
+
+@course_bp.route('/course/<int:course_id>/materials/<filename>')
+@login_required
+def download_material(course_id, filename):
+    folder = os.path.join(current_app.root_path, UPLOAD_BASE, str(course_id))
+    return send_from_directory(folder, filename, as_attachment=False)

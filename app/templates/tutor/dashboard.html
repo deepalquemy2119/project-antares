@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Dashboard del Tutor{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1>¡Bienvenido, Tutor!</h1>
+  <p class="lead">Desde aquí puedes administrar tus cursos y materiales.</p>
+
+  <hr>
+
+  <!-- Botón para crear un nuevo curso -->
+  <div class="mb-4">
+    <a href="{{ url_for('tutor.create_course') }}" class="btn btn-success btn-lg">
+      Crear un nuevo curso
+    </a>
+  </div>
+
+  <!-- Lista de cursos existentes -->
+  {% if courses %}
+    <h3>Tus cursos:</h3>
+    <ul class="list-group">
+      {% for c in courses %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ c.title }}</strong> <br>
+            <small>{{ c.description }}</small>
+          </div>
+          <div>
+            <a href="{{ url_for('tutor.upload_materials', course_id=c.id) }}" class="btn btn-primary btn-sm">
+              📤 Subir Materiales
+            </a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info mt-4">
+      Aún no tienes cursos creados. ¡Crea uno ahora!
+    </div>
+  {% endif %}
+
+  <hr>
+  <a href="{{ url_for('public.home') }}" class="btn btn-secondary mt-3">🏠 Volver al inicio</a>
+</div>
+{% endblock %}

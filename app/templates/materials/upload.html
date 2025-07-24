@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Subir Materiales{% endblock %}
+
+{% block categorias %}{% endblock %}
+{% block buscador %}{% endblock %}
+
+{% block content %}
+<div class="tutor-container">
+  <div class="tutor-card">
+    <h2 class="tutor-title"><i class="fa-solid fa-upload"></i> Subir Materiales</h2>
+
+    <p><strong>Curso:</strong> {{ course.title }}</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'danger' %}error-msg{% elif category == 'success' %}success-msg{% else %}info-msg{% endif %}">
+            {{ message }}
+          </p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- ===== Formulario de subida ===== -->
+    <form method="POST" enctype="multipart/form-data" class="tutor-form">
+      <label for="file_type"><i class="fa-solid fa-filter"></i> Tipo de material</label>
+      <select name="file_type" id="file_type" required>
+        <option value="video">Video</option>
+        <option value="image">Imagen</option>
+        <option value="pdf">PDF</option>
+        <option value="texto">Texto</option>
+      </select>
+
+      <label for="file"><i class="fa-solid fa-file-arrow-up"></i> Archivo</label>
+      <input type="file" name="file" id="file" required>
+
+      <button type="submit" class="tutor-btn">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Subir
+      </button>
+    </form>
+
+    <hr style="margin:2rem 0;">
+
+    <!-- ===== Lista de materiales ===== -->
+    <h3 class="tutor-title" style="font-size:1.3rem;">Materiales Subidos</h3>
+
+    <div class="materials-grid">
+      {% for material in materials %}
+        <div class="material-card">
+          <p><strong>{{ material.file_name }}</strong></p>
+
+          <!-- Miniaturas -->
+          {% if material.file_type == 'image' %}
+            <img src="{{ url_for('tutor.download_material', course_id=course.id, filename=material.file_name) }}"
+                 alt="Imagen"
+                 class="material-thumb">
+
+          {% elif material.file_type == 'video' %}
+            <video class="material-thumb" controls>
+              <source src="{{ url_for('tutor.download_material', course_id=course.id, filename=material.file_name) }}" type="video/mp4">
+              Tu navegador no soporta video.
+            </video>
+
+          {% elif material.file_type == 'pdf' %}
+            <a href="{{ url_for('tutor.download_material', course_id=course.id, filename=material.file_name) }}" target="_blank">
+              <img src="{{ url_for('static', filename='icons/pdf_icon.png') }}" alt="PDF" width="64"><br>Ver PDF
+            </a>
+
+          {% else %}
+            <a href="{{ url_for('tutor.download_material', course_id=course.id, filename=material.file_name) }}" download>
+              <img src="{{ url_for('static', filename='icons/file_icon.png') }}" alt="Archivo" width="64"><br>Descargar
+            </a>
+          {% endif %}
+
+          <!-- Botones -->
+          <div style="margin-top:0.8rem;">
+            <a href="{{ url_for('tutor.download_material', course_id=course.id, filename=material.file_name) }}"
+               class="tutor-btn" style="margin-bottom:0.5rem; display:inline-block;">
+              <i class="fa-solid fa-download"></i> Descargar
+            </a>
+
+            <form method="POST"
+                  action="{{ url_for('tutor.delete_material', course_id=course.id, material_id=material.id) }}"
+                    class="delete-material-form"
+      style="display:inline-block;">
+  <button type="submit" class="delete-btn">
+    <i class="fa-solid fa-trash"></i> Eliminar
+  </button>
+            </form>
+          </div>
+        </div>
+      {% else %}
+        <p>No hay materiales aún.</p>
+      {% endfor %}
+    </div>
+
+    <a href="{{ url_for('tutor.dashboard') }}" class="tutor-btn"
+       style="margin-top:2rem; display:inline-block; background:#596c7c; color:#fff;">
+      ← Volver al panel
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const deleteForms = document.querySelectorAll('.delete-material-form');
+  deleteForms.forEach(form => {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // detenemos envío automático
+      Swal.fire({
+        title: '¿Eliminar material?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit(); // ahora sí, enviamos
+        }
+      });
+    });
+  });
+});
+</script>
+{% endblock %}

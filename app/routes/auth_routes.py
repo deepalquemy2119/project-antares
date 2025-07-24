@@ -1,7 +1,7 @@
 # app/routes/auth_routes.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from ddbb.connection.conector import get_mysql_connection
+from app.ddbb.connection.conector import get_mysql_connection
 from firebase.firebase_init import get_firebase_db
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message

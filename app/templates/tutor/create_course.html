@@ -1,15 +1,37 @@
 {% extends "base.html" %}
 {% block title %}Crear Curso{% endblock %}
 
+{% block categorias %}{% endblock %}
+{% block buscador %}{% endblock %}
+
 {% block content %}
-<h2>Crear nuevo curso</h2>
-<form method="post">
-  <label for="title">Título del Curso:</label>
-  <input type="text" name="title" required>
+<div class="tutor-container">
+  <div class="tutor-card">
+    <h2 class="tutor-title"><i class="fa-solid fa-chalkboard-user"></i> Crear nuevo curso</h2>
 
-  <label for="description">Descripción:</label>
-  <textarea name="description" required></textarea>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{% if category == 'danger' %}error-msg{% else %}success-msg{% endif %}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-  <button type="submit">Crear Curso</button>
-</form>
+    <form method="post" class="tutor-form">
+      <label for="title"><i class="fa-solid fa-book"></i> Título del Curso</label>
+      <input type="text" name="title" id="title" required>
+
+      <label for="description"><i class="fa-solid fa-align-left"></i> Descripción</label>
+      <textarea name="description" id="description" required></textarea>
+
+      <label for="price"><i class="fa-solid fa-dollar-sign"></i> Precio</label>
+      <input type="number" name="price" id="price" step="0.01" min="1" required>
+
+      <label for="duration"><i class="fa-solid fa-clock"></i> Duración (en horas)</label>
+      <input type="number" name="duration" id="duration" min="1" required>
+
+      <button type="submit" class="tutor-btn"><i class="fa-solid fa-plus"></i> Crear Curso</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

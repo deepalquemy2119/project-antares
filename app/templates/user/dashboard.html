@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 
 {% block title %}Dashboard Usuario{% endblock %}
 
 {% block content %}
-<h1>Bienvenido a tu Dashboard, {{ session.get('user_name') }}!</h1>
+<h1>Bienvenido a tu Panel de Tutor, {{ session.get('user_name') }}!</h1>
 
 <p>Aquí puedes ver y gestionar tu perfil, cursos y más.</p>
 
@@ -11,5 +11,60 @@
   <li><a href="{{ url_for('user.profile') }}">Mi Perfil</a></li>
   <li><a href="{{ url_for('user.courses') }}">Mis Cursos</a></li>
   <li><a href="{{ url_for('user.settings') }}">Configuración</a></li>
+
+
+  <br><br>
+
+  <li><a href="{{ url_for('course.create_course') }}">Crear nuevo curso</a></li>
+
 </ul>
+{% endblock %} -->
+
+
+       {% extends "base.html" %}
+
+{% block title %}Dashboard Alumno{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+  <h1>Bienvenido, {{ session.get('user_name') }}</h1>
+  <p>Rol: <strong>{{ session.get('user_role') }}</strong></p>
+
+  <hr>
+
+
+  <div class="dashboard-actions">
+    <a href="{{ url_for('user.profile') }}" class="dashboard-btn">👤 Ver Perfil</a>
+    <a href="{{ url_for('user.courses') }}" class="dashboard-btn">📚 Mis Cursos</a>
+    <a href="{{ url_for('public.home') }}" class="dashboard-btn">🏠 Página de Inicio</a>
+    <a href="{{ url_for('auth.logout') }}" class="dashboard-btn logout-btn">🔒 Cerrar Sesión</a>
+  </div>
+
+  <hr>
+
+  
+  <div class="dashboard-section">
+    <h2>Resumen de tu actividad</h2>
+    
+    {% if user.courses %}
+      <ul class="dashboard-course-list">
+        {% for course in user.courses %}
+          <li class="dashboard-course-item">
+            <strong>{{ course.name }}</strong><br>
+            Progreso: {{ course.progress }}%<br>
+            {% if course.certified %}
+              <span class="certificado-ok">✔ Certificado obtenido</span>
+            {% else %}
+              <span class="certificado-pending">❌ Certificado pendiente</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No estás inscrito en ningún curso actualmente.</p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
+        

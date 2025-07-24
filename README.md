@@ -10,7 +10,7 @@ project-antares/
 ├── README.md
 ├── config.py
 ├── requirements.txt
-├── resumen.txt
+├── res/.txt
 ├── run.py
 ├── pytest.ini
 ├── seed_and_sync.py
@@ -18,7 +18,7 @@ project-antares/
 ├── app/
 │   ├── __init__.py
 │   ├── controllers/
-│   ├── models/
+│   ├── models/models.py
 │   ├── routes/
 │   │   ├── __init__.py
 │   │   ├── admin_routes.py
@@ -72,4 +72,5 @@ project-antares/
 ├── venv/
 
 #===================================================
+Para instalar todo: pip install -r requirements.txt
 

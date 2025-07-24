@@ -32,7 +32,7 @@ CREATE TABLE courses (
     duration INT NOT NULL,
     tutor_id INT NOT NULL,
     admin_id INT,
-    status ENUM('borrador', 'publicado') DEFAULT 'borrador',
+    status ENUM('borrador', 'publicado', 'con reseñas', 'aprobado') DEFAULT 'borrador',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (tutor_id) REFERENCES users(id),
@@ -61,6 +61,9 @@ CREATE TABLE materials (
     file_type VARCHAR(50),
     FOREIGN KEY (course_id) REFERENCES courses(id)
 );
+
+ALTER TABLE materials
+ADD COLUMN uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 
 
@@ -148,6 +151,7 @@ CREATE TABLE reviews (
     CONSTRAINT chk_review_unique UNIQUE(student_id, course_id)  -- Un alumno puede dejar solo una reseña por curso
 );
 
+ALTER TABLE reviews ADD COLUMN verified BOOLEAN DEFAULT FALSE;
 
 
 
@@ -315,20 +319,6 @@ JOIN courses c ON ce.course_id = c.id;
 
 
 
-DELIMITER $$
-
-CREATE PROCEDURE sp_create_course (
-    IN p_tutor_id INT,
-    IN p_title VARCHAR(255),
-    IN p_description TEXT
-)
-BEGIN
-    INSERT INTO courses (tutor_id, title, description, status)
-    VALUES (p_tutor_id, p_title, p_description, 'pendiente');
-END $$
-
-DELIMITER ;
-
 
 DELIMITER $$
 
@@ -407,30 +397,7 @@ DELIMITER ;
 
 
 
-DELIMITER $$
 
--- Verificar reseña (solo admin)
-CREATE PROCEDURE sp_verify_review (
-    IN p_review_id INT,
-    IN p_admin_id INT
-)
-BEGIN
-    DECLARE admin_role ENUM('admin', 'tutor', 'alumno');
-
-    -- Verificar que el usuario sea administrador
-    SELECT role INTO admin_role FROM users WHERE id = p_admin_id;
-
-    IF admin_role = 'admin' THEN
-        -- Actualizar la reseña a verificada
-        UPDATE reviews 
-        SET verified = TRUE 
-        WHERE id = p_review_id;
-    ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No autorizado para verificar reseñas.';
-    END IF;
-END $$
-
-DELIMITER ;
 
 
 
@@ -554,7 +521,6 @@ BEGIN
     SELECT role INTO admin_role FROM users WHERE id = p_admin_id;
 
     IF admin_role = 'admin' THEN
-        -- Aquí podrías agregar más lógica para moderar reseñas si fuera necesario (por ejemplo, si contiene lenguaje inapropiado)
         UPDATE reviews SET verified = TRUE WHERE id = p_review_id;
     ELSE
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No autorizado para verificar reseñas.';
@@ -570,33 +536,6 @@ DELIMITER ;
 -- TRIGGERS
 -- ===============================
 
-DELIMITER $$
-
-CREATE TRIGGER trg_sync_courses
-AFTER INSERT OR UPDATE OR DELETE ON courses
-FOR EACH ROW
-BEGIN
-    DECLARE affected_id INT;
-
-    IF (NEW.id IS NOT NULL) THEN
-        SET affected_id = NEW.id;
-    ELSE
-        SET affected_id = OLD.id;
-    END IF;
-
-    INSERT INTO sync_queue (table_name, record_id, action)
-    VALUES (
-        'courses',
-        affected_id,
-        CASE
-            WHEN NEW.id IS NOT NULL AND OLD.id IS NULL THEN 'INSERT'
-            WHEN NEW.id IS NOT NULL AND OLD.id IS NOT NULL THEN 'UPDATE'
-            WHEN NEW.id IS NULL AND OLD.id IS NOT NULL THEN 'DELETE'
-        END
-    );
-END$$
-
-DELIMITER ;
 
 
 DELIMITER $$
