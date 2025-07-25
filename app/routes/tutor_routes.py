@@ -1,4 +1,9 @@
-# tutor_routes.py
+
+# Para sincronizar ddbb
+from sync.helpers import enqueue_sync
+
+
+
 from flask import (
     Blueprint, render_template, request, redirect,
     url_for, flash, session, send_from_directory, abort
@@ -64,14 +69,16 @@ def dashboard():
 #==================================
 
 # RUTA: Crear nuevo curso
+from datetime import datetime
+
 @tutor_bp.route('/create_course', methods=['GET', 'POST'])
 @login_required(role='tutor')
 def create_course():
     if request.method == 'POST':
-        title = request.form.get('title')
-        description = request.form.get('description')
-        price = request.form.get('price')
-        duration = request.form.get('duration')
+        title = request.form.get('title', '').strip()
+        description = request.form.get('description', '').strip()
+        price = request.form.get('price', '').strip()
+        duration = request.form.get('duration', '').strip()
 
         # Validaciones
         if not title or not description or not price or not duration:
@@ -89,30 +96,37 @@ def create_course():
             flash("Precio y duración deben ser mayores a 0.", "danger")
             return redirect(request.url)
 
-        # Insertar en la base de datos
-        conn = get_mysql_connection()
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO courses (title, description, price, duration, tutor_id, status, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (
-            title,
-            description,
-            price,
-            duration,
-            session['user_id'],
-            'borrador',  # estado inicial
-            datetime.now()
-        ))
-        conn.commit()
-        conn.close()
+        try:
+            conn = get_mysql_connection()
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO courses (title, description, price, duration, tutor_id, status)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (
+                title,
+                description,
+                price,
+                duration,
+                session['user_id'],
+                'borrador'  # estado inicial
+            ))
+
+            conn.commit()
+
+        except Exception as e:
+            flash(f"Error al crear el curso: {e}", "danger")
+            return redirect(request.url)
+
+        finally:
+            cursor.close()
+            conn.close()
 
         flash("Curso creado correctamente. Queda pendiente de aprobación.", "success")
         return redirect(url_for('tutor.dashboard'))
 
-    # Si es GET, renderiza el formulario
+    # GET: renderiza el formulario
     return render_template('tutor/create_course.html')
-
 
 #==================================
 

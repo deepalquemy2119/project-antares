@@ -1,3 +1,7 @@
+
+from sync.helpers import enqueue_sync
+
+
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 import os
@@ -49,6 +53,9 @@ def create_course():
         )
         course_id = cursor.lastrowid
         conn.commit()
+
+        enqueue_sync('courses', course_id, 'INSERT')
+
         cursor.close()
         conn.close()
         # Crear carpeta física
@@ -86,6 +93,14 @@ def upload_materials(course_id):
                 (course_id, ftype, os.path.join(UPLOAD_BASE, str(course_id), filename))
             )
             conn.commit()
+
+
+            
+            enqueue_sync('materials', material_id, 'INSERT')
+
+
+
+
             cursor.close()
             conn.close()
             flash('Material subido con éxito', 'success')

@@ -68,11 +68,11 @@ class Config:
     CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
     CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
-    # Mail (Mailtrap por defecto)
-    MAIL_SERVER = 'sandbox.smtp.mailtrap.io'
+  # Mail (Gmail con contraseña de aplicación)
+    MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
-    MAIL_USERNAME = os.getenv('MAILTRAP_USER')
-    MAIL_PASSWORD = os.getenv('MAILTRAP_PASS')
+    MAIL_USERNAME = os.getenv('GMAIL_USER')
+    MAIL_PASSWORD = os.getenv('GMAIL_APP_PASS')  # tu contraseña de aplicación
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
 

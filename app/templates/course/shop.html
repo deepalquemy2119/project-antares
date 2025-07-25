@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Comprar Cursos</h2>
+
+<h3>Categorías</h3>
+<ul>
+    <li><a href="{{ url_for('user.shop') }}">Todas</a></li>
+    {% for cat in categories %}
+    <li>
+        <a href="{{ url_for('user.shop', category=cat.id) }}"
+           {% if selected_category == cat.id %}style="font-weight:bold;"{% endif %}>
+           {{ cat.name }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h3>Cursos disponibles</h3>
+<ul>
+    {% for course in courses %}
+    <li>
+        <strong>{{ course.title }}</strong><br>
+        {{ course.description }}<br>
+        Duración: {{ course.duration }}
+        <!-- Aquí podrías poner un botón para comprar -->
+    </li>
+    {% else %}
+    <li>No hay cursos disponibles en esta categoría.</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+
+{% block content %}
+<h2>{{ course.title }}</h2>
+<p>{{ course.description }}</p>
+<p>Duración: {{ course.duration }}</p>
+
+{% if already_bought %}
+  <p class="text-success">Ya estás inscrito en este curso ✅</p>
+{% else %}
+  <form method="POST" action="{{ url_for('user.buy_course', course_id=course.id) }}">
+    <label for="payment_method">Método de pago:</label>
+    <select name="payment_method" required>
+      <option value="tarjeta">Tarjeta</option>
+      <option value="paypal">PayPal</option>
+      <option value="transferencia">Transferencia</option>
+    </select>
+    <button type="submit">Comprar</button>
+  </form>
+{% endif %}
+
+{% endblock %}

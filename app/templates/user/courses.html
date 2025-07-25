@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Cursos{% endblock %}
+{% block content %}
+<h1>Mis Cursos</h1>
+
+{% if user.courses %}
+  <ul>
+    {% for course in user.courses %}
+      <li>
+        <strong>{{ course.name }}</strong> - Estado: {{ course.payment_status }}<br>
+        Certificado: {% if course.certified %}✔️{% else %}❌{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No estás inscrito en ningún curso.</p>
+{% endif %}
+
+{% endblock %}

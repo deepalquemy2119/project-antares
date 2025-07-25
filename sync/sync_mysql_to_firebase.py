@@ -1,5 +1,16 @@
 import sys
 import os
+
+import sys, os
+
+# Ruta absoluta a la carpeta firebase
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'firebase')))
+
+from firebase.firebase_init import get_firebase_db
+
+
+
+
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -10,7 +21,7 @@ from app.utils.logger import get_logger  # usa tu logger si lo tienes
 from app.ddbb.connection.conector import get_mysql_connection
 
 
-from firebase_init import get_firebase_db
+
 
 logger = get_logger(__name__) if 'get_logger' in globals() else None
 

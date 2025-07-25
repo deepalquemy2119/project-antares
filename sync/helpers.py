@@ -1,4 +1,4 @@
-from ddbb.connection.conector import get_mysql_connection
+from app.ddbb.connection.conector import get_mysql_connection
 
 def enqueue_sync(table_name: str, record_id: int, action: str):
     """

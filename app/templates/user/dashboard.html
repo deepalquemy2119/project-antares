@@ -1,25 +1,3 @@
-<!-- {% extends "base.html" %}
-
-{% block title %}Dashboard Usuario{% endblock %}
-
-{% block content %}
-<h1>Bienvenido a tu Panel de Tutor, {{ session.get('user_name') }}!</h1>
-
-<p>Aquí puedes ver y gestionar tu perfil, cursos y más.</p>
-
-<ul>
-  <li><a href="{{ url_for('user.profile') }}">Mi Perfil</a></li>
-  <li><a href="{{ url_for('user.courses') }}">Mis Cursos</a></li>
-  <li><a href="{{ url_for('user.settings') }}">Configuración</a></li>
-
-
-  <br><br>
-
-  <li><a href="{{ url_for('course.create_course') }}">Crear nuevo curso</a></li>
-
-</ul>
-{% endblock %} -->
-
 
        {% extends "base.html" %}
 
@@ -47,7 +25,7 @@
   <div class="dashboard-section">
     <h2>Resumen de tu actividad</h2>
     
-    {% if user.courses %}
+    {% if current_user.courses %}
       <ul class="dashboard-course-list">
         {% for course in user.courses %}
           <li class="dashboard-course-item">

@@ -21,6 +21,19 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+-- ===============================
+-- Tabla de Categories
+-- ===============================
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+
+
+
+
 -- ===============================
 -- Tabla de Cursos
 -- ===============================
@@ -40,6 +53,13 @@ CREATE TABLE courses (
     CONSTRAINT chk_price_positive CHECK (price > 0),
     CONSTRAINT chk_duration_positive CHECK (duration > 0)
 );
+
+
+ALTER TABLE courses ADD COLUMN category_id INT;
+ALTER TABLE courses ADD CONSTRAINT fk_courses_category FOREIGN KEY (category_id) REFERENCES categories(id);
+
+
+
 
 
 CREATE TABLE course_files (
@@ -69,7 +89,8 @@ ADD COLUMN uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 -- file_type: Tipo del archivo para distinguir video, pdf, imagen o texto.
 
--- file_path: Ruta relativa o URL del archivo almacenado en el servidor o almacenamiento.
+-- file_path: Ruta relativa o URL del archivo almacenado en el 
+-- servidor o almacenamiento.
 
 -- uploaded_at: Fecha de subida para auditoría.
 
