@@ -45,7 +45,7 @@ def register():
         full_name = request.form.get('full_name', '').strip()
         email = request.form.get('email', '').strip()
         password = request.form.get('password', '').strip()
-        role = request.form.get('rol', '').strip()
+        role = request.form.get('rol', '').strip().lower()
 
         if not all([username, full_name, email, password, role]):
             error = "Por favor, completá todos los campos obligatorios."

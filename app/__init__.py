@@ -18,11 +18,11 @@ def create_app():
   
 
 # inicio extensiones
-    db.init_app(app)
+    
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     migrate.init_app(app, db)
-
+    db.init_app(app)
     from app.models import User
 
     @login_manager.user_loader

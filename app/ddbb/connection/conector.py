@@ -1,4 +1,4 @@
-import mysql.connector
+
 from config import Config
 
 def get_mysql_connection():

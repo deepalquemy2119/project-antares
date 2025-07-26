@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, flash
 
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.decorators import admin_required  
 
 admin_bp = Blueprint('admin', __name__)
@@ -14,6 +14,7 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/dashboard')
 @login_required
 @admin_required
+
 def dashboard():
     return render_template('admin/dashboard.html')
 
@@ -23,16 +24,6 @@ def dashboard():
 
 #============================================
 
-#Sin decorador
-
-# @admin_bp.route('/dashboard')
-# @login_required
-# @admin_required
-# def dashboard():
-#     if not session.get('user_id') or session.get('user_role') != 'admin':
-#         flash("Acceso denegado.", "danger")
-#         return redirect(url_for('auth.login'))
-#     return render_template('admin/dashboard.html')
 
 @admin_bp.route('/manage_users')
 def manage_users():

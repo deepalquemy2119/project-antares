@@ -1,0 +1,72 @@
+/* static/css/dashboard.css */
+
+/* Base del dashboard */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px 30px;
+  background-color: #1c1e26;  /* Fondo oscuro suave */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: #eaeaea;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Título principal */
+.admin-title h1 {
+  font-size: 2.4rem;
+  color: #ffffff;
+  border-bottom: 2px solid #00bcd4;
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+}
+
+/* Subtítulo */
+.dashboard-container h2 {
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  color: #cccccc;
+  line-height: 1.6;
+}
+
+/* Lista de enlaces admin */
+.admin-links {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.admin-links li {
+  flex: 1 1 200px;
+}
+
+.admin-panel {
+  display: block;
+  text-align: center;
+  background-color: #00bcd4;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-panel:hover {
+  background-color: #0097a7;
+  transform: scale(1.03);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .admin-links {
+    flex-direction: column;
+  }
+}

@@ -1,11 +1,11 @@
 from functools import wraps
-from flask import session, redirect, url_for, flash
-
+from flask import redirect, url_for
+from flask_login import current_user
 
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get('user_role') != 'admin':
+        if not current_user.is_authenticated or (current_user.role or '').strip().lower() != 'admin':
             flash("Acceso denegado: se requieren permisos de administrador.", "danger")
             return redirect(url_for('auth.login'))
         return f(*args, **kwargs)
