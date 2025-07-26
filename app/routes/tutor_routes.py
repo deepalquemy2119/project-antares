@@ -1,8 +1,9 @@
 
 # Para sincronizar ddbb
-from sync.helpers import enqueue_sync
 
-
+from datetime import datetime
+import logging
+from logging.handlers import RotatingFileHandler
 
 from flask import (
     Blueprint, render_template, request, redirect,
@@ -13,8 +14,10 @@ from datetime import datetime
 import os
 import uuid
 from functools import wraps
-
+from PIL import Image  # Para optimizar imágenes
+import io
 from app.ddbb.connection.conector import get_mysql_connection
+from sync.helpers import enqueue_sync
 
 tutor_bp = Blueprint('tutor', __name__, template_folder='../templates/tutor')
 
@@ -115,6 +118,7 @@ def create_course():
             conn.commit()
 
         except Exception as e:
+            app.logger.error(f"Error al crear el curso: {e}")
             flash(f"Error al crear el curso: {e}", "danger")
             return redirect(request.url)
 
@@ -148,7 +152,7 @@ def upload_materials(course_id):
 
     if request.method == 'POST':
         uploaded_file = request.files.get('file')
-        material_type = request.form.get('file_type')  # CORRECCIÓN: usar 'file_type'
+        material_type = request.form.get('file_type')  # uso'file_type'
 
         if not uploaded_file:
             flash("No se seleccionó ningún archivo.", "danger")
@@ -169,10 +173,27 @@ def upload_materials(course_id):
         full_path = os.path.join(course_folder, unique_filename)
         uploaded_file.save(full_path)
 
+#-----------------------------------------------
+
+
+  # Optimización de imagen si es necesario
+        if ext in ALLOWED_EXTENSIONS['image']:
+            try:
+                optimize_image(full_path)
+            except Exception as e:
+                app.logger.error(f"Error al optimizar la imagen: {e}")
+                flash("Hubo un problema al optimizar la imagen.", "danger")
+                return redirect(request.url)
+
+
+
+#-----------------------------------------------
+
         # Guardamos el nombre original y la ruta relativa para la descarga
         rel_path = os.path.join(f"course_{course_id}", unique_filename)
 
         # Insertar en base de datos
+    try:    
         cursor.execute("""
             INSERT INTO materials (course_id, file_name, file_path, file_type, uploaded_at)
             VALUES (%s, %s, %s, %s, %s)
@@ -180,13 +201,25 @@ def upload_materials(course_id):
         conn.commit()
 
         flash("Archivo subido correctamente.", "success")
-        return redirect(request.url)
+
+    except Exception as e:
+            app.logger.error(f"Error al subir material: {e}")
+            flash("Error al subir el archivo. Intenta nuevamente.", "danger")
+
+    return redirect(request.url)
 
     # Obtener materiales existentes
-    cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
+cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
     materials = cursor.fetchall()
 
-    return render_template('materials/upload.html', course=course, materials=materials, course_id=course_id)
+return render_template('materials/upload.html', course=course, materials=materials, course_id=course_id)
+
+
+
+
+
+
+
 
 # RUTA: Descargar material
 @tutor_bp.route('/download_material/<int:course_id>/<filename>')
