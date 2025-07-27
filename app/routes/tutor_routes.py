@@ -209,10 +209,10 @@ def upload_materials(course_id):
     return redirect(request.url)
 
     # Obtener materiales existentes
-cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
+    cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
     materials = cursor.fetchall()
 
-return render_template('materials/upload.html', course=course, materials=materials, course_id=course_id)
+    return render_template('materials/upload.html', course=course,materials=materials, course_id=course_id)
 
 
 
