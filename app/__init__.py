@@ -6,12 +6,20 @@ from app.routes import user_routes
 from flask_migrate import Migrate
 from app.routes import tutor_routes
 from app.routes import admin_bp, auth_bp
-
+from app.routes.category_routes import category_bp
 from flask_mail import Mail
+from app.models import Category
+from flask import current_app as app
+
+
 
 migrate = Migrate()
 
 mail = Mail()
+
+
+
+
 
 def create_app():
     app = Flask(__name__)
@@ -47,8 +55,17 @@ def create_app():
         app.register_blueprint(course_bp)
         app.register_blueprint(admin_bp)
         app.register_blueprint(public_bp)
-        
+        app.register_blueprint(category_bp)
 
+
+
+        @app.context_processor
+        def inject_categories():
+            try:
+                categories = Category.query.order_by(Category.name).all()
+                return dict(global_categories=categories)
+            except Exception as e:
+                return dict(global_categories=[])
 
     return app  
     

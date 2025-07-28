@@ -385,3 +385,18 @@
 .next-btn {
   right: 0.5rem; /* separo un poco más del borde */
 }
+
+
+/* ---------- PARA category_list.html ------------ */
+.course-list {
+  list-style: none;
+  padding: 0;
+}
+
+.course-item {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}

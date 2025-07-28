@@ -119,9 +119,9 @@ def shop():
     category_id = request.args.get('category', type=int)
 
     if category_id:
-        courses = Course.query.filter_by(category_id=category_id).all()
+        courses = Course.query.filter_by(category_id=category_id).order_by(Course.title.asc()).all()
     else:
-        courses = Course.query.all()
+        courses = Course.query.order_by(Course.title.asc()).all()
 
     return render_template('course/shop.html', categories=categories, courses=courses, selected_category=category_id)
 

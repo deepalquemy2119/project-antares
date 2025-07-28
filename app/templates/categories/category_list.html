@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Categoría - {{ category.name }}{% endblock %}
+
+{% block content %}
+<div class="category-container">
+  <h2>Cursos en la categoría: <span style="color: #007BFF;">{{ category.name }}</span></h2>
+
+  {% if courses %}
+    <ul class="course-list">
+      {% for course in courses %}
+        <li class="course-item">
+          <h3>{{ course.title }}</h3>
+          <p><strong>Descripción:</strong> {{ course.description }}</p>
+          <p><strong>Duración:</strong> {{ course.duration }} horas</p>
+          <p><strong>Tutor:</strong> {{ course.tutor_name }}</p>
+          <p><strong>Precio:</strong> ${{ course.price }}</p>
+
+          {% if session.get('user_role') in ['admin', 'tutor'] %}
+            <p><strong>Estado:</strong> {{ course.status }}</p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No hay cursos aún en esta categoría.</p>
+  {% endif %}
+
+  <br>
+  <a href="{{ url_for(session.get('user_role') + '.dashboard') }}" class="nav-btn">Volver al Dashboard</a>
+</div>
+{% endblock %}

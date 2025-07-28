@@ -1,3 +1,4 @@
+from flask import current_app
 
 # Para sincronizar ddbb
 
@@ -147,14 +148,13 @@ def upload_materials(course_id):
         flash("Curso no encontrado o no autorizado.", "danger")
         return redirect(url_for('tutor.dashboard'))
 
-
     cursor = conn.cursor(dictionary=True)
 
     if request.method == 'POST':
         uploaded_file = request.files.get('file')
-        material_type = request.form.get('file_type')  # uso'file_type'
+        material_type = request.form.get('file_type')
 
-        if not uploaded_file:
+        if not uploaded_file or uploaded_file.filename == '':
             flash("No se seleccionó ningún archivo.", "danger")
             return redirect(request.url)
 
@@ -165,7 +165,6 @@ def upload_materials(course_id):
             flash("Tipo de archivo no permitido para este material.", "danger")
             return redirect(request.url)
 
-        # Crear carpeta del curso si no existe
         course_folder = os.path.join(UPLOAD_FOLDER, f"course_{course_id}")
         os.makedirs(course_folder, exist_ok=True)
 
@@ -173,48 +172,34 @@ def upload_materials(course_id):
         full_path = os.path.join(course_folder, unique_filename)
         uploaded_file.save(full_path)
 
-#-----------------------------------------------
-
-
-  # Optimización de imagen si es necesario
         if ext in ALLOWED_EXTENSIONS['image']:
             try:
                 optimize_image(full_path)
             except Exception as e:
-                app.logger.error(f"Error al optimizar la imagen: {e}")
+                current_app.logger.error(f"Error al optimizar la imagen: {e}")
                 flash("Hubo un problema al optimizar la imagen.", "danger")
                 return redirect(request.url)
 
-
-
-#-----------------------------------------------
-
-        # Guardamos el nombre original y la ruta relativa para la descarga
         rel_path = os.path.join(f"course_{course_id}", unique_filename)
 
-        # Insertar en base de datos
-    try:    
-        cursor.execute("""
-            INSERT INTO materials (course_id, file_name, file_path, file_type, uploaded_at)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (course_id, filename, rel_path, material_type, datetime.now()))
-        conn.commit()
-
-        flash("Archivo subido correctamente.", "success")
-
-    except Exception as e:
-            app.logger.error(f"Error al subir material: {e}")
+        try:
+            cursor.execute("""
+                INSERT INTO materials (course_id, file_name, file_path, file_type, uploaded_at)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (course_id, filename, rel_path, material_type, datetime.now()))
+            conn.commit()
+            flash("Archivo subido correctamente.", "success")
+        except Exception as e:
+            current_app.logger.error(f"Error al subir material: {e}")
             flash("Error al subir el archivo. Intenta nuevamente.", "danger")
 
-    return redirect(request.url)
+        return redirect(request.url)
 
-    # Obtener materiales existentes
+    # Si es GET, mostrar materiales
     cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
     materials = cursor.fetchall()
 
-    return render_template('materials/upload.html', course=course,materials=materials, course_id=course_id)
-
-
+    return render_template('materials/upload.html', course=course, materials=materials, course_id=course_id)
 
 
 

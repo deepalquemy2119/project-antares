@@ -126,19 +126,19 @@
   </main>
 
   <!-- --------------------- Section --------------------- -->
-  {% block categorias %}
-  <section class="categories-section"><br /><br /><br />
-    <h2 class="categories-title">Categories</h2>
-    <div class="categories-grid">
-      <div class="category-tile">Programming</div>
-      <div class="category-tile">Design</div>
-      <div class="category-tile">Marketing</div>
-      <div class="category-tile">Business</div>
-      <div class="category-tile">Photography</div>
-      <div class="category-tile">Languages</div>
-    </div>
-  </section>
-  {% endblock %}
+ {% block categorias %}
+<section class="categories-section">
+  <h2 class="categories-title">Categorías</h2>
+  <div class="categories-grid">
+    {% for cat in global_categories %}
+      <a class="category-tile" href="{{ url_for('category.show_category', category_id=cat.id) }}">
+        {{ cat.name }}
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
 
   <!-- --------- Barra de búsqueda ----------- -->
   {% block buscador %}
