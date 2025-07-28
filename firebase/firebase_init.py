@@ -8,14 +8,10 @@ load_dotenv()
 
 firebase_db_url = os.getenv("FIREBASE_DB_URL")
 
-# Elegir ruta de credenciales según entorno
 if os.path.exists("/run/secrets/firebase-key.json"):
     firebase_cred_path = "/run/secrets/firebase-key.json"
 else:
     firebase_cred_path = os.getenv("FIREBASE_CRED_PATH") or "./firebase/firebase-key.json"
-
-print(f"DEBUG: FIREBASE_DB_URL = {firebase_db_url}")
-print(f"DEBUG: FIREBASE_CRED_PATH = {firebase_cred_path}")
 
 if not firebase_db_url or not firebase_cred_path:
     raise Exception("FIREBASE_DB_URL y/o FIREBASE_CRED_PATH no están configuradas")
