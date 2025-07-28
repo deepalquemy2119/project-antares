@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
-from app.models import db, Certificado, User, Course, StudentCourse, Payment
+from app.models import db, Certificado, User, Course, StudentCourse, Payment, Category
 
 from sqlalchemy import text
 
@@ -33,10 +33,11 @@ def dashboard():
             "description": sc.course.description,
             "duration": sc.course.duration,
             "payment_status": sc.payment_status,
-            "has_certificate": has_certificate
+            "has_certificate": has_certificate,
+            "progress": 0  # o el valor real si lo calculás
         })
 
-    return render_template('user/dashboard.html', courses=courses, user=current_user)
+    return render_template('user/dashboard.html', user=current_user, courses=courses)
 
 
 # ===========================
@@ -45,25 +46,13 @@ def dashboard():
 @bp.route('/profile')
 @login_required
 def profile():
-    # Solo alumnos
     if current_user.role != 'alumno':
         flash("Solo los alumnos pueden ver este perfil.", "danger")
         return redirect(url_for('user.dashboard'))
 
     user = current_user
 
-    # Datos simulados (reemplazar por una consulta real)
-    user.courses = [
-        {"name": "Python desde cero", "progress": 85, "certified": True, "payment_due": datetime(2025, 7, 28)},
-        {"name": "Fundamentos de Machine Learning", "progress": 45, "certified": False, "payment_due": datetime(2025, 7, 25)}
-    ]
-    user.messages = [
-        {"sender": "Tutor Juan", "text": "¡Buen trabajo en el módulo 2!", "date": datetime(2025, 7, 21)},
-        {"sender": "Antares", "text": "Certificado disponible para descargar", "date": datetime(2025, 6, 30)}
-    ]
-
     return render_template('user/profile.html', user=user, fecha_hoy=datetime.today())
-
 
 # ===========================
 # CURSOS DEL ALUMNO
@@ -134,8 +123,7 @@ def shop():
     else:
         courses = Course.query.all()
 
-    return render_template('user/shop.html', categories=categories, courses=courses, selected_category=category_id)
-
+    return render_template('course/shop.html', categories=categories, courses=courses, selected_category=category_id)
 
 @bp.route('/course/<int:course_id>')
 @login_required
@@ -148,7 +136,7 @@ def course_detail(course_id):
         course_id=course.id
     ).first() is not None
 
-    return render_template('user/course_detail.html',
+    return render_template('course/detail.html',
                            course=course,
                            already_bought=already_bought)
 

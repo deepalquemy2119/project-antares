@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'clave_por_defecto')  # clave por defecto insegura para dev
+    SECRET_KEY = os.getenv('SECRET_KEY', 'clave_por_defecto')
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
@@ -35,7 +35,7 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587
     MAIL_USERNAME = os.getenv('GMAIL_USER')
-    MAIL_PASSWORD = os.getenv('GMAIL_APP_PASS')  # tu contraseña de aplicación
+    MAIL_PASSWORD = os.getenv('GMAIL_APP_PASS')  # contraseña de aplicación
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
 

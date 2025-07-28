@@ -97,7 +97,7 @@
       <a href="{{ url_for('public.home') }}" class="nav-btn">Home</a>
 
       {% if session.get('user_role') == 'admin' %}
-        <a href="{{ url_for('admin.dashboard') }}" class="nav-btn m-4">Dashboard Admin</a>
+        <a href="{{ url_for('admin_bp.dashboard') }}" class="nav-btn m-4">Dashboard Admin</a>
       {% elif session.get('user_role') == 'tutor' %}
         <a href="{{ url_for('tutor.dashboard') }}" class="nav-btn m-4">Dashboard Tutor</a>
       {% elif session.get('user_role') == 'alumno' %} 

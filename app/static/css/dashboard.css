@@ -70,3 +70,318 @@
     flex-direction: column;
   }
 }
+
+
+/* Estilos generales de la barra de progreso */
+.progress {
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  height: 20px;
+  width: 100%;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Estilo para diferentes valores de progreso, usando clases dinámicas */
+.progress-0 {
+  width: 0%;
+  background-color: #f44336; /* Rojo */
+}
+
+.progress-10 {
+  width: 10%;
+  background-color: #ff9800; /* Naranja */
+}
+
+.progress-20 {
+  width: 20%;
+  background-color: #ffeb3b; /* Amarillo */
+}
+
+.progress-30 {
+  width: 30%;
+  background-color: #4caf50; /* Verde */
+}
+
+.progress-40 {
+  width: 40%;
+  background-color: #8bc34a; /* Verde claro */
+}
+
+.progress-50 {
+  width: 50%;
+  background-color: #2196f3; /* Azul */
+}
+
+.progress-60 {
+  width: 60%;
+  background-color: #3f51b5; /* Azul oscuro */
+}
+
+.progress-70 {
+  width: 70%;
+  background-color: #9c27b0; /* Morado */
+}
+
+.progress-80 {
+  width: 80%;
+  background-color: #673ab7; /* Púrpura */
+}
+
+.progress-90 {
+  width: 90%;
+  background-color: #00bcd4; /* Cian */
+}
+
+.progress-100 {
+  width: 100%;
+  background-color: #009688; /* Teal */
+}
+
+
+.dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.dashboard-btn {
+  flex: 1 1 180px;
+  padding: 0.75rem 1rem;
+  background-color: #e1e5f2; /* tono suave azul/lila de tu paleta */
+  color: #1f2a44;
+  font-weight: 600;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.3s, background-color 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dashboard-btn:hover {
+  background-color: #c8d0e8;
+  transform: translateY(-2px);
+}
+
+.dashboard-btn.logout-btn {
+  background-color: #fdecea;
+  color: #a70000;
+}
+
+.dashboard-btn.logout-btn:hover {
+  background-color: #f9cfcf;
+}
+
+.dashboard-btn i {
+  margin-right: 0.5rem;
+}
+
+
+.dashboard-course-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.dashboard-course-item {
+  background: #f9fafe;
+  border: 1px solid #d9e2f2;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-course-item strong {
+  font-size: 1.2rem;
+  color: #1f2a44;
+}
+
+.progress {
+  width: 100%;
+  background: #e3e7f4;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 20px;
+}
+
+.progress-bar {
+  background: #6278df;
+  color: #fff;
+  text-align: center;
+  font-size: 0.9rem;
+  line-height: 20px;
+  height: 100%;
+}
+
+.certificado-ok {
+  color: #228B22;
+  font-weight: bold;
+}
+
+.certificado-pending {
+  color: #B22222;
+  font-weight: bold;
+}
+
+.dashboard-course-item .btn {
+  align-self: flex-start;
+  margin-top: 0.75rem;
+}
+
+
+/* -------- Para Shop.html ------ */
+.course-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  padding: 20px 0;
+}
+
+.course-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 280px;
+  transition: transform 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+}
+
+.course-card h4 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+.btn-comprar {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.btn-comprar:hover {
+  background-color: #0056b3;
+}
+
+
+/* ---------- Para scroll de Shop.html ----- */
+
+ .slider-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+/* Agrego padding horizontal para que cards no queden tapadas */
+.course-card-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 1rem 3rem; /* arriba/abajo 1rem, 
+  izquierda/derecha 3rem para espacio */
+  align-items: center; /* centra verticalmente las cards */
+}
+
+/* Cards */
+.course-card {
+  flex: 0 0 300px;      /* ancho fijo */
+  height: 350px;        /* alto fijo */
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+
+  display: flex;
+  flex-direction: column;   /* orden vertical */
+  justify-content: space-between; /* espacio entre contenido y botón */
+}
+
+.course-card h4 {
+  margin: 0 0 0.5rem 0;
+  /* límite de líneas para el título si querés */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-card p {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* OJO.............. compatibilidad nueva,
+   actualizar chrome y safari...!!! */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+
+  /* Propiedad estándar para line-clamp */
+  display: box;           /* fallback */
+  line-clamp: 4;          /* estándar */
+  box-orient: vertical;   /* fallback */
+
+  margin-bottom: 1rem;
+}
+
+.btn-comprar {
+  align-self: flex-start; /* botón alineado a la izquierda */
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn-comprar:hover {
+  background-color: #0056b3;
+}
+
+/* Botones flecha */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.3); /* más transparente */
+  border: none;
+  color: white;
+  font-size: 1.8rem; /* un poco más pequeño */
+  padding: 0 0.6rem;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 3px;
+  user-select: none;
+  width: 2rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prev-btn {
+  left: 0.5rem; 
+}
+
+.next-btn {
+  right: 0.5rem; /* separo un poco más del borde */
+}

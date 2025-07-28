@@ -29,7 +29,31 @@
 </section>
 {% endblock %}
 
+{% block cursos %}
+<!-- Cursos disponibles -->
+<section class="courses-section">
+  <h2 class="courses-title">Cursos Disponibles</h2>
+  {% if courses %}
+    <div class="courses-grid">
+      {% for course in courses %}
+        <div class="course-card">
+          <h3>{{ course.name }}</h3>
+          <p>{{ course.description }}</p>
 
+          {% if course.id not in user_courses %}
+            <!-- Si el usuario no ha comprado el curso, mostrar el botón de compra -->
+            <a href="{{ url_for('user.purchase_course', course_id=course.id) }}" class="btn btn-primary">Comprar Curso</a>
+          {% else %}
+            <span class="course-purchased">✔ Curso Comprado</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No hay cursos disponibles en este momento.</p>
+  {% endif %}
+</section>
+{% endblock %}
 
 {% block buscador %}
 <!--  -->
@@ -60,6 +84,4 @@
     });
   });
 </script>
-
-
 {% endblock %}

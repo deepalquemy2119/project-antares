@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalles del Curso{% endblock %}
+
+{% block content %}
+  <h2>{{ course.title }}</h2>
+  <p>{{ course.description }}</p>
+  <p>Duración: {{ course.duration }}</p>
+
+  {% if already_bought %}
+    <p class="text-success">✅ Ya estás inscrito en este curso</p>
+  {% else %}
+    <form method="POST" action="{{ url_for('user.buy_course', course_id=course.id) }}">
+      <label for="payment_method">Método de pago:</label>
+      <select name="payment_method" required>
+        <option value="tarjeta">Tarjeta</option>
+        <option value="paypal">PayPal</option>
+        <option value="transferencia">Transferencia</option>
+      </select>
+      <button type="submit">Comprar</button>
+    </form>
+  {% endif %}
+{% endblock %}

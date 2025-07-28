@@ -5,3 +5,21 @@
   <h1>Administrar Cursos</h1>
   <p>Los cursos disponibles son.......</p>
 {% endblock %}
+
+
+{% for curso in cursos %}
+  <div class="curso-item">
+    <h3>{{ curso.title }}</h3>
+    <p>{{ curso.description }}</p>
+    <p>Categoría: {{ curso.category_id }}</p>
+    <p>Estado: {{ curso.status }}</p>
+
+    {% if curso.status in ['borrador', 'publicado'] %}
+      <form action="{{ url_for('admin.approve_course', course_id=curso.id) }}" method="post">
+        <button type="submit" class="btn btn-primary">Aprobar Curso</button>
+      </form>
+    {% else %}
+      <p>Este curso ya está aprobado.</p>
+    {% endif %}
+  </div>
+{% endfor %}

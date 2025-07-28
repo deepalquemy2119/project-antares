@@ -1,48 +1,65 @@
 
-       {% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Dashboard Alumno{% endblock %}
 {% block body_class %}dashboard-page{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-  <h1>Bienvenido, {{ session.get('user_name') }}</h1>
-  <p>Rol: <strong>{{ session.get('user_role') }}</strong></p>
+  <h1>Bienvenido, &nbsp;&nbsp;{{ session.get('user_name') }}</h1>
+  <p>Rol: &nbsp;&nbsp;<strong>{{ session.get('user_role') }}</strong></p>
 
   <hr>
 
-
   <div class="dashboard-actions">
-    <a href="{{ url_for('user.profile') }}" class="dashboard-btn">👤 Ver Perfil</a>
-    <a href="{{ url_for('user.courses') }}" class="dashboard-btn">📚 Mis Cursos</a>
-    <a href="{{ url_for('public.home') }}" class="dashboard-btn">🏠 Página de Inicio</a>
+    <a href="{{ url_for('user.profile') }}" class="dashboard-btn">Ver Perfil</a>
+    <a href="{{ url_for('user.courses') }}" class="dashboard-btn">Mis Cursos</a>
+    <a href="{{ url_for('public.home') }}" class="dashboard-btn">Página de Inicio</a>
     <a href="{{ url_for('auth.logout') }}" class="dashboard-btn logout-btn">🔒 Cerrar Sesión</a>
   </div>
 
   <hr>
 
-  
+
   <div class="dashboard-section">
     <h2>Resumen de tu actividad</h2>
-    
-    {% if current_user.courses %}
+
+    {% if courses %}
       <ul class="dashboard-course-list">
-        {% for course in user.courses %}
+        {% for course in courses %}
           <li class="dashboard-course-item">
-            <strong>{{ course.name }}</strong><br>
-            Progreso: {{ course.progress }}%<br>
-            {% if course.certified %}
+            <strong>{{ course.title }}</strong><br>
+
+            <!-- Barra de progreso (si la tenés) -->
+            <div class="progress">
+              <div class="progress-bar progress-{{ course.progress or 0 }}" role="progressbar"
+                   aria-valuenow="{{ course.progress or 0 }}" aria-valuemin="0" aria-valuemax="100">
+                {{ course.progress or 0 }}%
+              </div>
+            </div>
+
+            <br>
+            {% if course.has_certificate %}
               <span class="certificado-ok">✔ Certificado obtenido</span>
             {% else %}
               <span class="certificado-pending">❌ Certificado pendiente</span>
+            {% endif %}
+
+            {% if course.payment_status != 'pagado' %}
+              <br>
+            <form action="{{ url_for('user.buy_course', course_id=course.course_id) }}" method="post" style="display:inline;">
+  <button type="submit" class="btn btn-primary">Comprar Curso</button>
+</form>
             {% endif %}
           </li>
         {% endfor %}
       </ul>
     {% else %}
-      <p>No estás inscrito en ningún curso actualmente.</p>
+    <p>No estás inscrito en ningún curso actualmente.</p><br>
+<a href="{{ url_for('user.shop') }}" class="dashboard-btn">
+  <i class="fas fa-shopping-cart"></i> Explorar cursos disponibles
+</a>
     {% endif %}
   </div>
 </div>
 {% endblock %}
-        

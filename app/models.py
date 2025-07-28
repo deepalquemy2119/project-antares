@@ -46,6 +46,12 @@ class User(db.Model, UserMixin):
         return f"<User {self.username}>"
 
 
+    @property
+    def courses(self):
+        return [sc.course for sc in self.student_courses]
+
+
+
 # =========================
 # CATEGORY
 # =========================

@@ -5,6 +5,7 @@ from app.routes.public_routes import public_bp
 from app.routes import user_routes
 from flask_migrate import Migrate
 from app.routes import tutor_routes
+from app.routes import admin_bp, auth_bp
 
 from flask_mail import Mail
 

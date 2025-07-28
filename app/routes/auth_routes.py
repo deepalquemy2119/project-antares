@@ -125,7 +125,7 @@ def login():
             elif user_obj.role == 'tutor':
                 return redirect(url_for('tutor.dashboard'))
             elif user_obj.role == 'admin':
-                return redirect(url_for('admin.dashboard'))
+                return redirect(url_for('admin_bp.dashboard'))
             else:
                 return redirect(url_for('user.dashboard'))
         else:
