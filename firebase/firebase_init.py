@@ -8,8 +8,9 @@ load_dotenv()
 
 firebase_db_url = os.getenv("FIREBASE_DB_URL")
 
-if os.path.exists("/run/secrets/firebase-key.json"):
-    firebase_cred_path = "/run/secrets/firebase-key.json"
+if os.path.exists("/etc/secrets/firebase-key.json"):
+    firebase_cred_path = "/etc/secrets/firebase-key.json"
+    
 else:
     firebase_cred_path = os.getenv("FIREBASE_CRED_PATH") or "./firebase/firebase-key.json"
 
