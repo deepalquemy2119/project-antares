@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Comprar Curso{% endblock %}
+
+{% block content %}
+  <div class="buy-course-container">
+    <h2>Compra del Curso: {{ course.title }}</h2>
+
+    <form method="POST">
+      <label for="payment_method">Seleccioná un método de pago:</label>
+      <select name="payment_method" id="payment_method" required>
+        <option value="">-- Elegí una opción --</option>
+        <option value="tarjeta">Tarjeta</option>
+        <option value="paypal">PayPal</option>
+        <option value="transferencia">Transferencia</option>
+      </select>
+
+      <button type="submit" class="nav-btn m-4">Confirmar Compra</button>
+    </form>
+  </div>
+{% endblock %}

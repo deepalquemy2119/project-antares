@@ -111,6 +111,10 @@ CREATE TABLE student_courses (
     FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
+
+ALTER TABLE student_courses MODIFY payment_status ENUM('pendiente', 'pagado', 'verificado') DEFAULT 'pendiente';
+
+
 -- ===============================
 -- Tabla de Pagos
 -- ===============================

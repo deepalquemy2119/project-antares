@@ -13,6 +13,7 @@ class Config:
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 
     # Base de datos
+    MYSQL_PORT = os.getenv("DB_PORT", 3306)
     MYSQL_HOST = os.getenv("DB_HOST")
     MYSQL_USER = os.getenv("DB_USER")
     MYSQL_PASSWORD = os.getenv("DB_PASSWORD")
@@ -38,6 +39,9 @@ class Config:
     MAIL_PASSWORD = os.getenv('GMAIL_APP_PASS')  # contraseña de aplicación
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
+
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'no-reply@antares.com')
+
 
     # Carpeta de subida de archivos
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))

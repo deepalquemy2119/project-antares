@@ -5,19 +5,20 @@
 {% block content %}
   <h2>{{ course.title }}</h2>
   <p>{{ course.description }}</p>
-  <p>Duración: {{ course.duration }}</p>
+  <p>Duración: {{ course.duration }} horas</p>
 
   {% if already_bought %}
     <p class="text-success">✅ Ya estás inscrito en este curso</p>
   {% else %}
     <form method="POST" action="{{ url_for('user.buy_course', course_id=course.id) }}">
       <label for="payment_method">Método de pago:</label>
-      <select name="payment_method" required>
-        <option value="tarjeta">Tarjeta</option>
+      <select id="payment_method" name="payment_method" required>
+        <option value="">-- Seleccioná un método --</option>
+        <option value="tarjeta">Tarjeta de crédito/débito</option>
         <option value="paypal">PayPal</option>
-        <option value="transferencia">Transferencia</option>
+        <option value="transferencia">Transferencia bancaria</option>
       </select>
-      <button type="submit">Comprar</button>
+      <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Comprar</button>
     </form>
   {% endif %}
 {% endblock %}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Confirmación de Pago - Antares Academy</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .header h2 {
+      margin: 0;
+      color: #34495e;
+    }
+    .details {
+      margin-top: 20px;
+    }
+    .details table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .details td {
+      padding: 8px 4px;
+    }
+    .details td:first-child {
+      font-weight: bold;
+      width: 40%;
+    }
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 18px;
+      background-color: #3498db;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #888;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 20px;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+        margin: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+ <header>
+   <img src="{{ url_for('static', filename='img/logo-antares-4.png') }}" alt="Antares Logo" width="120" />
+ </header>
+
+  <div class="container">
+    <div class="header">
+      <h2>Pago Confirmado - Antares Academy</h2>
+    </div>
+
+    <p>Hola <strong>{{ user.full_name or user.username }}</strong>,</p>
+
+    <p>¡Gracias por tu compra! Hemos recibido y verificado tu pago exitosamente. Aquí tienes los detalles de tu transacción:</p>
+
+    <div class="details">
+      <table>
+        <tr><td>Curso:</td><td>{{ course.title }}</td></tr>
+        <tr><td>Monto:</td><td>${{ payment.amount }}</td></tr>
+        <tr><td>Método de pago:</td><td>{{ payment.payment_method | capitalize }}</td></tr>
+        <tr><td>Fecha:</td><td>{{ payment.created_at.strftime('%d/%m/%Y %H:%M') }}</td></tr>
+        <tr><td>Estado:</td><td>✅ Verificado</td></tr>
+      </table>
+    </div>
+
+    {% if payment.receipt_url %}
+      <p style="text-align:center;">
+        <a class="button" href="{{ payment.receipt_url }}" target="_blank">Ver comprobante de pago</a>
+      </p>
+    {% endif %}
+
+    <p>Ya puedes acceder al contenido del curso desde tu panel de alumno. Si tienes alguna duda, nuestro equipo está para ayudarte.</p>
+
+    <div class="footer">
+      Este es un mensaje automático. No respondas este correo. <br/>
+      &copy; {{ current_year or "2025" }} Antares Academy. Todos los derechos reservados.
+    </div>
+  </div>
+</body>
+</html>

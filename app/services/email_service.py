@@ -1,35 +1,18 @@
-
 from flask_mail import Message
-from flask import current_app
-#from app import mail
+from flask import current_app, render_template, url_for
+from app import mail 
 
-
-from flask import Flask
-from flask_mail import Mail, Message
-
-app = Flask(__name__)
-
-mail = Mail(app)
-
-
-
-
-
-def send_reset_email(to_email, reset_url):
+def send_payment_receipt(user, course, payment):
+    course_url = url_for('user.course_detail', course_id=course.id, _external=True)
     msg = Message(
-        subject="Recuperación de contraseña - Antares",
-        sender=("Antares", current_app.config['MAIL_USERNAME']),
-        recipients=[to_email]
+        subject="Comprobante de Pago - Antares",
+        sender=current_app.config['MAIL_USERNAME'],
+        recipients=[user.email]
     )
-    msg.body = f"""Hola,
-
-Has solicitado restablecer tu contraseña.
-
-Haz clic en el siguiente enlace para crear una nueva contraseña:
-{reset_url}
-
-Este enlace expirará en 1 hora.
-
-Si no lo solicitaste, simplemente ignora este correo.
-"""
+    msg.html = render_template(
+        "emails/payment_receipt.html",
+        user=user,
+        course=course,
+        payment=payment
+    )
     mail.send(msg)

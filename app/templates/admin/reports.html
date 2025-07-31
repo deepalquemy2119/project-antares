@@ -5,4 +5,19 @@
   <h1>Reportes Antares Platform
   </h1>
   <p>Las actividades de la plataforma son.......</p>
+
+
+  {% for pago in pagos %}
+  <tr>
+    <td>{{ pago.id }}</td>
+    <td>{{ pago.student_id }}</td>
+    <td>{{ pago.course_id }}</td>
+    <td>{{ pago.amount }}</td>
+    <td>
+      <a href="{{ url_for('admin_bp.test_send_payment_email', payment_id=pago.id) }}" class="btn btn-sm btn-success">
+        Enviar correo de prueba
+      </a>
+    </td>
+  </tr>
+{% endfor %}
 {% endblock %}

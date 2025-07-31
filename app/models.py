@@ -1,4 +1,5 @@
 
+from app.services.email_service import send_payment_receipt
 
 
 from app.extensions import db
@@ -140,6 +141,7 @@ class StudentCourse(db.Model):
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
     payment_status = db.Column(db.Enum('pendiente', 'verificado'), default='pendiente')
     payment_date = db.Column(db.DateTime)
+    payment_due = db.Column(db.DateTime)
     payment_receipt_url = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

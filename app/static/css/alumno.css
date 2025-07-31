@@ -1,79 +1,85 @@
 
-@import url('./index.css');
 
-
-
-
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #a0a3a6;
-    color: #1f1b2e;
-    text-align: center;
-}
-ul {
-    list-style: none;
-    padding: 0;
-}
-li a {
-    display: block;
-    padding: 1rem;
-    margin: 1rem auto;
-    background-color: #4b4b51;
-    color: white;
-    text-decoration: none;
-    width: 200px;
-    border-radius: 8px;
-}
-li a:hover {
-    background-color: #3f4974;
-}
-
-
-
-
-
-/* .dashboard-container {
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 10px;
-}
-
-.dashboard-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-
-.dashboard-btn {
-  padding: 0.75rem 1.5rem;
-  background-color: #004aad;
+/* --- Botón fijo de compra --- */
+.floating-shop-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: rgba(40, 167, 69, 0.85); /* verde con opacidad para suavizar */
   color: white;
-  border-radius: 6px;
+  padding: 0.75em 1.25em;
+  border-radius: 50px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   text-decoration: none;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+.floating-shop-btn:hover {
+  background-color: rgba(40, 167, 69, 1);
 }
 
-.dashboard-btn.logout-btn {
-  background-color: #c0392b;
+/* --- Botones normales --- */
+.btn {
+  position: static; /* no fijo */
+  display: inline-block;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  background-color: #4b4b51cc; /* gris oscuro con transparencia */
+  color: #f0f0f0;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0.5em 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.btn:hover {
+  background-color: #3f4974dd;
+  color: white;
 }
 
-.dashboard-course-list {
+/* --- Espacio para evitar que el botón fijo tape contenido --- */
+.profile-container {
+  padding-bottom: 120px; /* espacio suficiente para botón fijo */
+}
+
+/* Opcional: para que el texto y elementos de perfil tengan fondo claro y mejor lectura */
+.profile-container,
+.profile-section,
+.courses-list li,
+.course-suggestion,
+.profile-section ul li {
+  background-color: #fefefe;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 10px rgba(31, 27, 46, 0.07);
+  color: #1f1b2e;
+}
+
+/* Ajustes para la lista de cursos y mensajes */
+.courses-list {
+  list-style: none;
+  padding-left: 0;
+}
+.profile-section ul {
   list-style: none;
   padding-left: 0;
 }
 
-.dashboard-course-item {
-  background: #f4f4f4;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-}
-
+/* Certificado OK */
 .certificado-ok {
-  color: green;
+  color: #28a745cc;
+  font-weight: bold;
 }
 
-.certificado-pending {
-  color: red;
+/* Alertas */
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  margin-top: 0.5em;
+  font-size: 0.9em;
 }
- */
+
+
