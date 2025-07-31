@@ -96,9 +96,7 @@ FIREBASE_DB_URL=https://antares-academy-default-rtdb.firebaseio.com/
 
 FIREBASE_BUCKET_URL=gs://antares-academy.firebasestorage.app
 
-# Clave_Privada (de firebase ) :
-
-
+# firebase-key.json:  (de firebase ) :
 
 
 #===================================================
@@ -121,4 +119,6 @@ Los alumnos pueden:
 
 
 #===================================================
+Ejecutamos en consola. $ python run.py
 
+para mysql: $ sudo mysql -u root -p  , luego password de mysql: JadenKugo2119$&?
