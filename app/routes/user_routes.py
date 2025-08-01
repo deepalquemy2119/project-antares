@@ -37,7 +37,7 @@ def dashboard():
             "duration": sc.course.duration,
             "payment_status": sc.payment_status,
             "has_certificate": has_certificate,
-            "progress": 0  # o el valor real si lo calculás
+            "progress": 0  # o el valor real si lo calculo
         })
 
     return render_template('user/dashboard.html', user=current_user, courses=courses)
@@ -55,8 +55,6 @@ def profile():
 
     user = current_user
 
-    # cursos sugeridos (ejemplo: cursos que no está inscrito el alumno)
-    # ejemplo, todos los cursos que NO estén en student_courses del usuario
 
     student_course_ids = [sc.course_id for sc in user.student_courses]
     suggested_courses = Course.query.filter(~Course.id.in_(student_course_ids)).limit(5).all()
@@ -71,7 +69,7 @@ def profile():
 @bp.route('/courses')
 @login_required
 def courses():
-    # cargar cursos de la BD si queremos despues
+    # cargar cursos de la BD
     return render_template('user/courses.html', user=current_user)
 
 
@@ -154,80 +152,6 @@ def course_detail(course_id):
 
 
 
-
-# ================= BUY COURSE =============
-
-
-# @bp.route('/course/<int:course_id>/buy', methods=['GET', 'POST'])
-# @login_required
-# def buy_course(course_id):
-#     course = Course.query.get_or_404(course_id)
-
-#     # Verificar si ya está inscrito
-#     already_bought = StudentCourse.query.filter_by(
-#         student_id=current_user.id,
-#         course_id=course.id
-#     ).first()
-#     if already_bought:
-#         flash("Ya estás inscrito en este curso.", "info")
-#         return redirect(url_for('user.course_detail', course_id=course.id))
-
-#     payment_method = request.form.get('payment_method')
-
-#     # Validar método de pago
-#     valid_methods = ['tarjeta', 'paypal', 'transferencia']
-#     if payment_method not in valid_methods:
-#         flash("Por favor, seleccioná un método de pago válido.", "warning")
-#         return redirect(url_for('user.course_detail', course_id=course.id))
-
-#     # Lógica para calcular precio, etc.
-#     amount = course.price
-
-#     # Crear registro de pago
-#     payment = Payment(
-#         student_id=current_user.id,
-#         course_id=course.id,
-#         amount=amount,
-#         payment_method=payment_method,
-#         verified=True  # cambiar según proceso real de verificación
-#     )
-#     db.session.add(payment)
-#     db.session.commit()
-
-#     # Crear inscripción
-#     student_course = StudentCourse(
-#         student_id=current_user.id,
-#         course_id=course.id,
-#         payment_status='verificado'  # o 'pendiente' según lógica
-#     )
-#     db.session.add(student_course)
-#     db.session.commit()
-
-#     # Enviar correo con plantilla HTML
-#     msg = Message(
-#         subject=f"Confirmación de compra: {course.title}",
-#         sender=current_app.config['MAIL_DEFAULT_SENDER'],
-#         recipients=[current_user.email]
-#     )
-
-#     # Opción: podés generar una URL para el recibo si lo subís a Firebase o lo guardás
-#     receipt_url = payment.receipt_url if hasattr(payment, 'receipt_url') else None
-
-#     msg.html = render_template(
-#         'emails/payments_receipt.html',
-#         user=current_user,
-#         course=course,
-#         payment=payment,
-#         receipt_url=receipt_url
-#     )
-
-#     mail.send(msg)
-  
-
-#     flash("Compra realizada con éxito. ¡Te enviamos un comprobante por correo!", "success")
-#     return redirect(url_for('user.dashboard'))
-  
-
 @bp.route('/course/<int:course_id>/buy', methods=['GET', 'POST'])
 @login_required
 def buy_course(course_id):
@@ -309,4 +233,4 @@ def confirm_payment(payment_id):
     send_payment_receipt(user, course, payment)
 
     flash("Pago confirmado y correo enviado.", "success")
-    return redirect(url_for('user.profile'))  # o a donde quieras redirigir
+    return redirect(url_for('user.profile'))  # o a otra view

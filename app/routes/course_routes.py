@@ -16,8 +16,9 @@ from flask import send_from_directory
 
 course_bp = Blueprint('course', __name__, url_prefix='/tutor')
 
-# Directorio base para uploads (configurable en app.config)
-UPLOAD_BASE = os.path.join('uploads', 'courses')
+# Directorio base para uploads configurable en config.py
+UPLOAD_BASE = os.path.join('uploads', 'courses') 
+# puedo importar el config, y me llevo esto al config
 
 ALLOWED_EXTENSIONS = {
     'video': {'mp4', 'mov', 'avi'},
@@ -43,8 +44,7 @@ def create_course():
         description = request.form.get('description')
         price = request.form.get('price')
         duration = request.form.get('duration')
-        # Validaciones básicas omitidas
-        # Insertar curso en DB
+     
         conn = get_mysql_connection()
         cursor = conn.cursor()
         cursor.execute(

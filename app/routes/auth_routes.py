@@ -3,7 +3,7 @@ from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 from flask_login import login_user, logout_user
 import bcrypt
-from app.models import User   # Importamos la base de datos de SQLAlchemy
+from app.models import User   # Importo la base de datos de SQLAlchemy
 from firebase.firebase_init import get_firebase_db
 from app.extensions import db
 

@@ -1,7 +1,5 @@
 from flask import current_app
 
-# Para sincronizar ddbb
-
 from datetime import datetime
 import logging
 from logging.handlers import RotatingFileHandler

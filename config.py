@@ -10,7 +10,7 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'clave_por_defecto')
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+   
 
     # Base de datos
     MYSQL_PORT = os.getenv("DB_PORT", 3306)
@@ -46,7 +46,7 @@ class Config:
     # Carpeta de subida de archivos
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
-
+    
 
 class TestConfig(Config):
     TESTING = True
