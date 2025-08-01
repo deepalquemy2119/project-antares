@@ -14,8 +14,7 @@ from app.models import User, Course, Payment
 admin_bp = Blueprint('admin_bp', __name__)
 
 
-# Con decorador Personalizado
-
+# deco personal
 #admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
@@ -167,7 +166,7 @@ def send_payment_confirmation_email(user, course, payment):
 @login_required
 @admin_required
 def test_email_payment():
-    # ⚠️ Reemplazá con IDs válidos que existan en tu base
+    # Reemplazo con IDs válidos que existan en la DDBB
     user = User.query.first()
     course = Course.query.first()
     payment = Payment.query.first()

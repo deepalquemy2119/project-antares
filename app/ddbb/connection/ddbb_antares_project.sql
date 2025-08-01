@@ -87,14 +87,6 @@ ADD COLUMN uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
 
 
--- file_type: Tipo del archivo para distinguir video, pdf, imagen o texto.
-
--- file_path: Ruta relativa o URL del archivo almacenado en el 
--- servidor o almacenamiento.
-
--- uploaded_at: Fecha de subida para auditoría.
-
-
 
 -- ===============================
 -- Tabla de Relación Alumno-Curso
