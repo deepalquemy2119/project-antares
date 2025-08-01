@@ -21,10 +21,19 @@ class Config:
     MYSQL_PASSWORD = os.getenv("DB_PASSWORD")
     MYSQL_DATABASE = os.getenv("DB_NAME")
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}"
-    )
+   SQLALCHEMY_DATABASE_URI = (
+    f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
+)
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+    # --------- Para subir materiales para crear Cursos ----- viene de app/_init_.py ------
+    # para local ---> SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://usuario:password@localhost/ddbb_antares_project'
+    
+
+
+
 
     # Firebase
     FIREBASE_DB_URL = os.getenv("FIREBASE_DB_URL")
@@ -57,6 +66,3 @@ class TestConfig(Config):
     FIREBASE_CRED_PATH = '/firebase/clave_privada.json'
 
 
-# --------- Para subir materiales para crear Cursos ----- viene de app/_init_.py ------
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://usuario:password@localhost/ddbb_antares_project'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False

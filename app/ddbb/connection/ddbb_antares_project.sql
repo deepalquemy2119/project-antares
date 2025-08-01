@@ -4,8 +4,8 @@
 
 
 -- Crear base de datos
-CREATE DATABASE IF NOT EXISTS ddbb_antares_project;
-USE ddbb_antares_project;
+-- CREATE DATABASE IF NOT EXISTS ddbb_antares_project;
+-- USE ddbb_antares_project;
 
 -- ===============================
 -- Tabla de Usuarios
@@ -299,8 +299,14 @@ JOIN courses c ON r.course_id = c.id;
 
 
 -- Vista para administradores: pagos verificados
-CREATE VIEW view_verified_payments AS
-SELECT p.amount, p.payment_method, p.payment_date, sc.payment_status, u.full_name AS student_name, c.title AS course_title
+CREATE OR REPLACE VIEW view_verified_payments AS
+SELECT 
+    p.amount, 
+    p.payment_method, 
+    p.created_at AS payment_date, 
+    sc.payment_status, 
+    u.full_name AS student_name, 
+    c.title AS course_title
 FROM payments p
 JOIN student_courses sc ON p.student_id = sc.student_id AND p.course_id = sc.course_id
 JOIN users u ON p.student_id = u.id

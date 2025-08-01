@@ -122,3 +122,51 @@ Los alumnos pueden:
 Ejecutamos en consola. $ python run.py
 
 para mysql: $ sudo mysql -u root -p  , luego password de mysql: JadenKugo2119$&?
+
+
+
+
+
+
+
+
+
+
+
+#===============================================================
+Connect to MySQL
+Private NetworkPublic Network
+Connecting over the public network causes Egress costs.
+
+Connection URL:
+
+
+mysql://root:mVyzUfezAmAdiTvpuJQOZlbNgnIZeNcG@nozomi.proxy.rlwy.net:19064/railway
+
+
+Raw
+
+mysql
+
+command: mysql -h nozomi.proxy.rlwy.net -u root -p mVyzUfezAmAdiTvpuJQOZlbNgnIZeNcG --port 19064 --protocol=TCP railway
+
+
+Railway CLI
+
+connect
+
+command:
+
+railway connect MySQL
+
+
+Create a new variable in the service you want to connect to this database.
+2
+
+Assign it the following value:
+
+${{ MySQL.MYSQL_URL }}
+
+3
+
+Use the variable in your application code.
