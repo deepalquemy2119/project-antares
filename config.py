@@ -21,7 +21,7 @@ class Config:
     MYSQL_PASSWORD = os.getenv("DB_PASSWORD")
     MYSQL_DATABASE = os.getenv("DB_NAME")
 
-   SQLALCHEMY_DATABASE_URI = (
+    SQLALCHEMY_DATABASE_URI = (
     f"mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
 )
 
