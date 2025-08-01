@@ -67,7 +67,7 @@ Para instalar todo: pip install -r requirements.txt
 PARA ENTRAR A LA BASE DE DATOS:
 
 Para ingresar a la DDBB de mysql: 
-    desde consola: 
+    desde consola o algun DBMS( yo use DBeaver ): 
         $ sudo mysql -u root -p: ---> contraseña del sistema ( windows, linux, o mac )
         $ Enter password: JadenKugo2119$&? ( contraseña para ingresar a la DDBB: ddbb_antares_project )
 

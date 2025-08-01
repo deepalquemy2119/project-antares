@@ -1,0 +1,20 @@
+
+
+# MySQL
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=JadenKugo2119$&?
+DB_NAME=ddbb_antares_project
+
+# Firebase
+FIREBASE_CRED_PATH=/home/jaden9112/Escritorio/pro-ant/firebase/clave_privada.json
+FIREBASE_DB_URL=https://antares-academy-default-rtdb.firebaseio.com/
+
+
+FIREBASE_BUCKET_URL=gs://antares-academy.firebasestorage.app
+
+#MAILTRAP_USER=<tu_usuario_mailtrap>
+#MAILTRAP_PASS=<tu_password_mailtrap>
+
+GMAIL_USER=deepalquemy2119@gmail.com
+GMAIL_APP_PASS=etws tmfa mmez yrfp
