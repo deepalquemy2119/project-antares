@@ -2,6 +2,8 @@
 
 import os
 from dotenv import load_dotenv
+import mysql.connector
+
 
 # Cargamos variables del .env
 load_dotenv()

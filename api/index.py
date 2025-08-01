@@ -1,12 +1,8 @@
-from run import app as handler
+# api/index.py
+from app import create_app
+from flask import Request
 
-from flask import Flask, jsonify
+app = create_app()
 
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return jsonify({"mensaje": "Hola desde Flask en Vercel"})
-
-# Esto es obligatorio para que Vercel use app como handler
-handler = app
+def handler(request: Request, *args, **kwargs):
+    return app(request.environ, start_response=lambda status, headers: None)

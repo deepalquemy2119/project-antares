@@ -1,6 +1,7 @@
 
 import sys
 import os
+import mysql.connector
 
 from app import create_app
 
