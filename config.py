@@ -18,8 +18,8 @@ class Config:
 
     # Aplicar url encoding a la contraseña para evitar errores con caracteres especiales
     SQLALCHEMY_DATABASE_URI = (
-        f"mysql+mysqlconnector://{MYSQL_USER}:{quote_plus(MYSQL_PASSWORD)}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}"
-    )
+    f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}")
+
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
