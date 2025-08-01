@@ -74,7 +74,7 @@ def sync_to_firebase(conn):
         cleaned = {}
         for k, v in row.items():
             if isinstance(v, datetime):
-                cleaned[k] = v.isoformat()  # o el formato que prefieras
+                cleaned[k] = v.isoformat()  # cualquier formato
             else:
                 cleaned[k] = v
         return cleaned

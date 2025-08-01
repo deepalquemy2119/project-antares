@@ -8,7 +8,7 @@ from app.extensions import db
 @pytest.fixture
 def client():
     flask_app.config['TESTING'] = True
-    flask_app.config['WTF_CSRF_ENABLED'] = False  # Si usás Flask-WTF
+    flask_app.config['WTF_CSRF_ENABLED'] = False  # Si uso Flask-WTF
     with flask_app.test_client() as client:
         yield client
 
