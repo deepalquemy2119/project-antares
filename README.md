@@ -41,23 +41,6 @@ Estructura del proyecto:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #===================================================
 PARA INSTALAR DEPENDENCIAS Y LIBRERIAS:
 
@@ -71,17 +54,12 @@ Para ingresar a la DDBB de mysql:
         $ sudo mysql -u root -p: ---> contraseña del sistema ( windows, linux, o mac )
         $ Enter password: JadenKugo2119$&? ( contraseña para ingresar a la DDBB: ddbb_antares_project )
 
-Seleccionar DDBB: $ use ddbb_antares_project; ( y listo estamos dentro de la base de datos )
+Seleccionar DDBB: $ use ddbb_antares_project; ( y estamos dentro de la base de datos )
 
 
 
 #===================================================
-PARA ESTAS DENTRO DE LA DDBB DE FIREBASE: 
-
-
-Desde el file: .env = ( contenido ):
-
-
+para entrar a DDBB de FIREBASE: es usada como cache
 
 # MySQL
 DB_HOST=localhost
@@ -134,7 +112,7 @@ para mysql: $ sudo mysql -u root -p  , luego password de mysql: JadenKugo2119$&?
 
 
 #===============================================================
-Connect to MySQL
+Connect to MySQL and railway:
 Private NetworkPublic Network
 Connecting over the public network causes Egress costs.
 
@@ -148,25 +126,19 @@ Raw
 
 mysql
 
-command: mysql -h nozomi.proxy.rlwy.net -u root -p mVyzUfezAmAdiTvpuJQOZlbNgnIZeNcG --port 19064 --protocol=TCP railway
+command: mysql -h nozomi.proxy.rlwy.net -u root -p
+
+Pass:  mVyzUfezAmAdiTvpuJQOZlbNgnIZeNcG 
+--port 19064 --protocol=TCP railway
 
 
-Railway CLI
-
-connect
-
-command:
+Railway CLI connect command:
 
 railway connect MySQL
 
 
-Create a new variable in the service you want to connect to this database.
-2
 
 Assign it the following value:
 
 ${{ MySQL.MYSQL_URL }}
 
-3
-
-Use the variable in your application code.

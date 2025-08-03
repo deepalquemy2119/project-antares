@@ -52,4 +52,4 @@ celery = make_celery(app)
 def run_sync():
     print("[Celery] Ejecutando sincronización incremental...")
     process_sync_queue()
-    print("[Celery] ✅ Sincronización completada")
+    print("[Celery] La sincronización esta completa")
