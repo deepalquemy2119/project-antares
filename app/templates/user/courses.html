@@ -8,8 +8,8 @@
   <ul>
     {% for course in user.courses %}
       <li>
-        <strong>{{ course.name }}</strong> - Estado: {{ course.payment_status }}<br>
-        Certificado: {% if course.certified %}✔️{% else %}❌{% endif %}
+        <strong>{{ course.name }}</strong> Estado: {{ course.payment_status }}<br>
+        Certificado: {% if course.certified %}{% else %}❌{% endif %}
       </li>
     {% endfor %}
   </ul>

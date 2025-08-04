@@ -1,21 +1,27 @@
-
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    {% for category, message in messages %}
-      <script>
-        Swal.fire({
-          icon: "{{ 'warning' if category == 'warning' else 'success' if category == 'success' else 'info' }}",
-          html: '{{ message|safe }}',
-          confirmButtonText: 'OK',
-          timer: 5000,
-          timerProgressBar: true
-        });
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Inyectamos los mensajes como JSON string desde Jinja (sin que el linter se queje)
+        const flashMessages = JSON.parse('{{ messages | tojson | safe }}');
 
-        //console.log("Este es un mensaje SUPER FLASH!!!:", messages);
-      </script>
-    {% endfor %}
+        for (const [category, message] of flashMessages) {
+          const validCategories = ['success', 'error', 'warning', 'info'];
+          const icon = validCategories.includes(category) ? category : 'info';
+
+          Swal.fire({
+            icon: icon,
+            html: message,
+            confirmButtonText: 'OK',
+            timer: 5000,
+            timerProgressBar: true,
+            allowOutsideClick: false,
+            allowEscapeKey: true
+          });
+        }
+      });
+    </script>
   {% endif %}
 {% endwith %}

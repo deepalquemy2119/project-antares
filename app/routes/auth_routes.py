@@ -125,7 +125,7 @@ def login():
             elif user_obj.role == 'tutor':
                 return redirect(url_for('tutor.dashboard'))
             elif user_obj.role == 'admin':
-                return redirect(url_for('admin_bp.dashboard'))
+                return redirect(url_for('admin.dashboard'))
             else:
                 return redirect(url_for('user.dashboard'))
         else:
@@ -211,3 +211,20 @@ def logout():
     session.clear()
     flash("Sesión cerrada correctamente.", "success")
     return redirect(url_for('public.home'))
+
+
+
+from flask import Blueprint
+from app.ddbb.connection.conector import get_mysql_connection
+
+test_db = Blueprint('test_db', __name__)
+
+@test_db.route("/ping-db")
+def ping_db():
+    try:
+        conn = get_mysql_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        return "Conexión MySQL exitosa"
+    except Exception as e:
+        return f"Error de conexión: {e}"

@@ -11,11 +11,8 @@ from email.mime.multipart import MIMEMultipart
 # ------- para probar boton desde el panel ADMIN-------
 from app.models import User, Course, Payment 
 
-admin_bp = Blueprint('admin_bp', __name__)
+admin_bp = Blueprint('admin', __name__)
 
-
-# deco personal
-#admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @admin_bp.route('/dashboard')
@@ -23,6 +20,10 @@ admin_bp = Blueprint('admin_bp', __name__)
 @admin_required
 
 def dashboard():
+
+    print("Usuario:", current_user.id)
+    print("Rol:", repr(current_user.role))  # para ver si tiene espacios
+    print("Autenticado:", current_user.is_authenticated)
     return render_template('admin/dashboard.html')
 
 
@@ -39,10 +40,12 @@ def manage_users():
 
 
 #---------------------------
-@admin_bp.route('/admin/manage_courses')
+@admin_bp.route('/manage_courses')
+@login_required
+@admin_required
 def manage_courses():
     # Filtrar los cursos que están en estado 'borrador' o 'publicado'
-    cursos_pendientes = Curso.query.filter(Curso.status.in_(['borrador', 'publicado'])).all()
+    cursos_pendientes = Course.query.filter(Course.status.in_(['borrador', 'publicado'])).all()
     return render_template('admin/manage_courses.html', cursos=cursos_pendientes)
 
 
@@ -191,3 +194,30 @@ def reports():
     # mostrar reportes y estadísticas
     return render_template('admin/reports.html')
 
+
+#_--------------------- APROBAR CURSOS ----------------------
+@admin_bp.route('/approve_course/<int:course_id>', methods=['POST'])
+@login_required
+@admin_required
+def approve_course(course_id):
+    course = Course.query.get_or_404(course_id)
+
+    if course.status == 'aprobado':
+        flash("Este curso ya está aprobado.", "info")
+        return redirect(url_for('admin_bp.manage_courses'))
+
+    try:
+        course.status = 'aprobado'
+        db.session.commit()
+
+        tutor = User.query.get(course.tutor_id)
+        if tutor:
+            send_approval_email(tutor.email, course.title)
+
+        flash("Curso aprobado correctamente y correo enviado al tutor.", "success")
+    except Exception as e:
+        db.session.rollback()
+        print(f"[ERROR APROBANDO CURSO] {e}")
+        flash("Ocurrió un error al aprobar el curso.", "danger")
+
+    return redirect(url_for('admin_bp.manage_courses'))

@@ -1,45 +1,79 @@
 # project-antares
 
 Estructura del proyecto:
+Para ver : (tree -L 2 (con entorno activado)
+(venv) jaden9112% tree -L 2
 
-├── app/
-│   ├── __init__.py        # crea la app, registra blueprints
-│   ├── extensions.py      # db, login_manager, migrate
-│   ├── models.py          # modelos SQLAlchemy
-│   ├── templates/         # tus templates
-│   │   ├── base.html
-│   │   ├── auth/
-│   │   │   ├── login.html
-│   │   │   └── register.html
-│   │   └── ...
-│   ├── static/            # css, js, imágenes
-│   │   ├── css/
-│   │   └── img/
-│   ├── routes/            # vistas organizadas por módulo
-│   │   ├── auth_routes.py
-│   │   ├── user_routes.py
-│   │   ├── admin_routes.py
-│   │   ├── tutor_routes.py
-│   │   ├── course_routes.py
-│   │   └── public_routes.py
-│   ├── ddbb/
-│   │   └── connection/
-│   │       └── conector.py
-│   └── firebase/
-│       └── firebase_init.py
-│
-├── migrations/            # creada por flask-migrate
-│
-├── tests/                 # pruebas con pytest
-│   ├── conftest.py
-│   └── test_auth.py
-│
-├── config.py              # configuración general
-├── run.py                 # punto de entrada
+.
+├── api
+│   └── index.py
+├── app
+│   ├── ddbb
+│   ├── decorators.py
+│   ├── extensions.py
+│   ├── __init__.py
+│   ├── models.py
+│   ├── __pycache__
+│   ├── routes
+│   ├── services
+│   ├── static
+│   ├── templates
+│   └── utils
+├── celery_worker.py
+├── config.py
+├── Dockerfile.test
+├── dump.rdb
+├── firebase
+│   ├── firebase_init.py
+│   ├── firebase-key.json
+│   ├── __init__.py
+│   └── __pycache__
+├── LICENSE
+├── migrations
+│   ├── alembic.ini
+│   ├── env.py
+│   ├── __pycache__
+│   ├── README
+│   ├── script.py.mako
+│   └── versions
+├── __pycache__
+│   ├── celery_worker.cpython-313.pyc
+│   ├── config.cpython-311.pyc
+│   └── config.cpython-313.pyc
+├── pytest.ini
+├── README.md
 ├── requirements.txt
-└── venv/
+├── run.py
+├── seed_and_sync.py
+├── sync
+│   ├── helpers.py
+│   ├── __init__.py
+│   ├── process_sync_queue.py
+│   ├── __pycache__
+│   ├── sync_mysql_to_firebase.py
+│   └── tasks.py
+├── tests
+│   ├── conftest.py
+│   ├── __init__.py
+│   ├── test_firebase.py
+│   ├── test_login.py
+│   ├── test_mysql.py
+│   └── test_register.py
+├── uploads
+│   ├── course_1
+│   ├── course_12
+│   ├── course_3
+│   ├── course_5
+│   ├── course_6
+│   └── course_7
+└── venv
+    ├── bin
+    ├── include
+    ├── lib
+    ├── lib64 -> lib
+    └── pyvenv.cfg
 
-
+31 directories, 37 files
 
 #===================================================
 PARA INSTALAR DEPENDENCIAS Y LIBRERIAS:

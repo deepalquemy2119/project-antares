@@ -1,4 +1,5 @@
 from flask import current_app
+from app.utils.image_tools import optimize_image
 
 from datetime import datetime
 import logging
@@ -17,6 +18,10 @@ from PIL import Image  # Para optimizar imágenes
 import io
 from app.ddbb.connection.conector import get_mysql_connection
 from sync.helpers import enqueue_sync
+from app.utils.logger import get_logger
+
+
+logger = get_logger(__name__)
 
 tutor_bp = Blueprint('tutor', __name__, template_folder='../templates/tutor')
 
@@ -134,8 +139,6 @@ def create_course():
 #==================================
 
 
-
-# RUTA: Subir materiales
 @tutor_bp.route('/upload_materials/<int:course_id>', methods=['GET', 'POST'])
 @login_required(role='tutor')
 def upload_materials(course_id):
@@ -159,10 +162,15 @@ def upload_materials(course_id):
         filename = secure_filename(uploaded_file.filename)
         ext = os.path.splitext(filename)[1].lower()
 
-        if ext not in ALLOWED_EXTENSIONS.get(material_type, []):
-            flash("Tipo de archivo no permitido para este material.", "danger")
+        if material_type not in ALLOWED_EXTENSIONS:
+            flash("Tipo de material no permitido.", "danger")
             return redirect(request.url)
 
+        if ext not in ALLOWED_EXTENSIONS[material_type]:
+            flash(f"Tipo de archivo {ext} no permitido para '{material_type}'.", "danger")
+            return redirect(request.url)
+
+        # Guardar archivo
         course_folder = os.path.join(UPLOAD_FOLDER, f"course_{course_id}")
         os.makedirs(course_folder, exist_ok=True)
 
@@ -170,13 +178,20 @@ def upload_materials(course_id):
         full_path = os.path.join(course_folder, unique_filename)
         uploaded_file.save(full_path)
 
+        # Optimizar imagen si corresponde
         if ext in ALLOWED_EXTENSIONS['image']:
             try:
                 optimize_image(full_path)
             except Exception as e:
-                current_app.logger.error(f"Error al optimizar la imagen: {e}")
-                flash("Hubo un problema al optimizar la imagen.", "danger")
+                flash("Error al optimizar imagen.", "danger")
+                logger.error(f"Optimización falló: {e}", exc_info=True)
                 return redirect(request.url)
+
+# logger.warning("El tutor intentó acceder a un curso que no le pertenece.")
+# logger.info(f"Material '{filename}' subido por el tutor {session['user_id']}")
+# logger.debug(f"Extensión recibida: {ext}")
+
+
 
         rel_path = os.path.join(f"course_{course_id}", unique_filename)
 
@@ -186,21 +201,18 @@ def upload_materials(course_id):
                 VALUES (%s, %s, %s, %s, %s)
             """, (course_id, filename, rel_path, material_type, datetime.now()))
             conn.commit()
-            flash("Archivo subido correctamente.", "success")
+            flash("Material subido correctamente.", "success")
         except Exception as e:
-            current_app.logger.error(f"Error al subir material: {e}")
-            flash("Error al subir el archivo. Intenta nuevamente.", "danger")
+            flash("Error al guardar en base de datos.", "danger")
+            current_app.logger.error(f"DB insert error: {e}")
 
         return redirect(request.url)
 
-    # Si es GET, mostrar materiales
+    # Si es GET, mostrar materiales ya subidos
     cursor.execute("SELECT * FROM materials WHERE course_id = %s ORDER BY uploaded_at DESC", (course_id,))
     materials = cursor.fetchall()
 
     return render_template('materials/upload.html', course=course, materials=materials, course_id=course_id)
-
-
-
 
 
 
@@ -265,3 +277,4 @@ def delete_material(course_id, material_id):
 
     flash("Material eliminado correctamente.", "success")
     return redirect(url_for('tutor.upload_materials', course_id=course_id))
+

@@ -9,7 +9,7 @@
   <h1>Bienvenido, &nbsp;&nbsp;{{ session.get('user_name') }}</h1>
   <p>Rol: &nbsp;&nbsp;<strong>{{ session.get('user_role') }}</strong></p>
 
-  <hr>
+  
 
   <div class="dashboard-actions">
     <a href="{{ url_for('user.profile') }}" class="dashboard-btn">Ver Perfil</a>
@@ -18,7 +18,7 @@
     <a href="{{ url_for('auth.logout') }}" class="dashboard-btn logout-btn">🔒 Cerrar Sesión</a>
   </div>
 
-  <hr>
+  
 
 
   <div class="dashboard-section">

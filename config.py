@@ -10,7 +10,7 @@ class Config:
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-    MYSQL_PORT = os.getenv("DB_PORT", 3306)
+    MYSQL_PORT = os.getenv("DB_PORT")
     MYSQL_HOST = os.getenv("DB_HOST")
     MYSQL_USER = os.getenv("DB_USER")
     MYSQL_PASSWORD = os.getenv("DB_PASSWORD")

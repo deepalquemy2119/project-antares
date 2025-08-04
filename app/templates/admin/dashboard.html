@@ -15,9 +15,12 @@
   </h2>
 
   <ul class="admin-links">
-    <li><a class="admin-panel" href="{{ url_for('admin.manage_users') }}">Gestionar Usuarios</a></li>
-    <li><a class="admin-panel" href="{{ url_for('admin.manage_courses') }}">Gestionar Cursos</a></li>
-    <li><a class="admin-panel" href="{{ url_for('admin.reports') }}">Reportes</a></li>
+    <li><a class="admin-panel" href="{{ url_for('admin_bp.manage_users') }}">Gestionar Usuarios</a></li>
+
+    <li><a class="admin-panel" href="{{ url_for('admin_bp.manage_courses') }}">Gestionar Cursos</a></li>
+
+    <li><a class="admin-panel" href="{{ url_for('admin_bp.reports') }}">Reportes</a></li>
+
   </ul>
 
 
