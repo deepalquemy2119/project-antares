@@ -9,7 +9,7 @@ sys.path.append(BASE_DIR)  # para que pueda encontrar carpetas en el nivel de ce
 from celery import Celery
 from flask import Flask
 from sync.sync_utils import sync_mysql_to_firebase
-from ddbb.connection.conector import get_mysql_connection
+from app.ddbb.connection.conector import get_mysql_connection
 import time
 
 

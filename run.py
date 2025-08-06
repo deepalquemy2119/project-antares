@@ -1,5 +1,9 @@
 import sys
 import os
+from multiprocessing import Process
+from app import create_app
+
+from celery_worker import listen_sync_queue
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(BASE_DIR)
@@ -10,10 +14,7 @@ sys.path.append(os.path.join(BASE_DIR, 'ddbb'))
 
 
 
-from multiprocessing import Process
-from app import create_app
 
-from celery_worker import listen_sync_queue 
 
 app = create_app()
 
