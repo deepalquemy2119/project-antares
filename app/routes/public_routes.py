@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, jsonify
 from datetime import datetime
 from app.models import Course
 
@@ -22,3 +22,15 @@ def home():
         fecha_completa=fecha_actual, 
         courses=courses,  
         user_courses=user_courses)
+
+
+# @public_bp.route('/ping', methods=['GET'])
+# def ping():
+#     """
+#     Ping test endpoint
+#     ---
+#     responses:
+#       200:
+#         description: Devuelve pong
+#     """
+#     return jsonify({"message": "pong"})

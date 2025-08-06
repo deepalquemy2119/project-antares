@@ -254,14 +254,18 @@ GMAIL_APP_PASS=twdl ycmp xgfi gyih
 MAIL_DEFAULT_SENDER=deepalquemy2119@gmail.com
 
 
+# ======== Swagger ==========
 
-#===================================================
+Vamos a implementar swagger.
 
-
-
-
-
+# Para documentacon:  http://127.0.0.1:5000/apidocs/
 
 
-#===============================================================
+
+
+
+
+
+
+#=================================================
 
